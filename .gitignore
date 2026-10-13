@@ -1,0 +1,8 @@
+secrets.h
+*.bak
+*.zip
+build/
+.vscode/
+.idea/
+__pycache__/
+*.pyc

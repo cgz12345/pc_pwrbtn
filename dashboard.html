@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>远程开机 · 云端控制台</title>
+<style>
+:root{
+  --bg1:#1d2b45; --bg2:#0d1220; --card:rgba(255,255,255,.045); --line:rgba(255,255,255,.09);
+  --txt:#e8eef7; --dim:#8ea2bd; --ok:#22c55e; --warn:#f59e0b; --bad:#f43f5e;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;min-height:100vh;color:var(--txt);
+  font:15px/1.55 -apple-system,"Segoe UI",system-ui,"PingFang SC","Microsoft YaHei",sans-serif;
+  background:radial-gradient(120% 90% at 50% 0%,var(--bg1) 0%,var(--bg2) 55%,#070a12 100%);
+  display:flex;justify-content:center;padding:26px 16px 60px}
+.wrap{width:100%;max-width:520px}
+.hd{display:flex;align-items:center;gap:10px;margin-bottom:16px}
+.hd h1{font-size:19px;margin:0;font-weight:650;letter-spacing:.3px}
+.dot{width:10px;height:10px;border-radius:50%;background:var(--warn);flex:0 0 auto}
+.dot.on{background:var(--ok);box-shadow:0 0 0 0 rgba(34,197,94,.6);animation:pulse 2.2s infinite}
+.dot.off{background:var(--bad)}
+@keyframes pulse{70%{box-shadow:0 0 0 10px rgba(34,197,94,0)}100%{box-shadow:0 0 0 0 rgba(34,197,94,0)}}
+.chip{margin-left:auto;font-size:12px;padding:4px 10px;border-radius:999px;background:rgba(255,255,255,.06);
+  border:1px solid var(--line);color:var(--dim);white-space:nowrap}
+.card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:16px;
+  backdrop-filter:blur(10px);box-shadow:0 24px 50px -30px #000}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.it{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);border-radius:13px;padding:10px 12px}
+.it.full{grid-column:1/3}
+.it .k{font-size:11px;color:#7f8ea8;letter-spacing:.5px;margin-bottom:3px}
+.it .v{font-size:15px;font-weight:600;word-break:break-all}
+.it .v small{font-size:11.5px;font-weight:400;color:var(--dim)}
+.bar{height:6px;border-radius:99px;background:rgba(255,255,255,.09);overflow:hidden;margin-top:9px}
+.bar>i{display:block;height:100%;width:0;transition:width .4s;
+  background:linear-gradient(90deg,#22c55e,#84cc16)}
+.bar>i.mid{background:linear-gradient(90deg,#f59e0b,#fbbf24)}
+.bar>i.low{background:linear-gradient(90deg,#ef4444,#f43f5e)}
+button{font-family:inherit}
+.big{width:100%;margin-top:14px;min-height:64px;border:0;border-radius:15px;font-size:18px;font-weight:750;
+  color:#04140a;background:linear-gradient(180deg,#4ade80,#16a34a);cursor:pointer;
+  box-shadow:0 14px 26px -14px #22c55e;transition:transform .08s,filter .2s}
+.big:hover{filter:brightness(1.05)}
+.big:active{transform:translateY(1px) scale(.995)}
+.big[disabled]{opacity:.55;cursor:not-allowed}
+.danger{width:100%;margin-top:10px;min-height:54px;border:1px solid rgba(244,63,94,.45);border-radius:15px;
+  font-size:15px;font-weight:650;color:#fda4af;background:rgba(244,63,94,.09);cursor:pointer;transition:.15s}
+.danger:hover{background:rgba(244,63,94,.16)}
+.danger:active{transform:translateY(1px)}
+.log{margin-top:14px;font:12px/1.75 ui-monospace,Consolas,"Cascadia Mono",monospace;color:#8ea2bd;
+  max-height:170px;overflow:auto;overscroll-behavior:contain}
+.log b{color:#cfe0f5;font-weight:600}
+.log .r{color:#4ade80}.log .w{color:#fca5a5}
+details{margin-top:14px;border:1px solid var(--line);border-radius:14px;background:rgba(255,255,255,.03)}
+summary{cursor:pointer;padding:11px 14px;font-size:13px;color:var(--dim);list-style:none}
+summary::-webkit-details-marker{display:none}
+summary:before{content:"⚙ ";}
+.settings{padding:2px 14px 14px}
+.settings label{display:block;font-size:11.5px;color:#7f8ea8;margin:9px 0 4px}
+.settings input{width:100%;padding:9px 11px;border-radius:9px;border:1px solid var(--line);
+  background:rgba(0,0,0,.28);color:var(--txt);font:13px/1.4 ui-monospace,Consolas,monospace}
+.settings .row{display:flex;gap:8px;margin-top:12px}
+.settings .row button{flex:1;padding:10px;border-radius:10px;border:1px solid var(--line);
+  background:rgba(255,255,255,.06);color:var(--txt);cursor:pointer;font-size:13px}
+.settings .row button.primary{background:rgba(34,197,94,.16);border-color:rgba(34,197,94,.45);color:#86efac}
+.ft{margin-top:14px;font-size:11.5px;color:#5f6f88;text-align:center;line-height:1.8}
+code{background:rgba(255,255,255,.07);padding:1px 5px;border-radius:5px;font-size:11.5px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="hd">
+    <span class="dot" id="dot"></span>
+    <h1>远程开机 · 控制台</h1>
+    <span class="chip" id="chConn">连接中…</span>
+  </div>
+
+  <div class="card">
+    <div class="grid">
+      <div class="it"><div class="k">主机状态</div><div class="v" id="vOnline">–</div></div>
+      <div class="it"><div class="k">最近上报</div><div class="v" id="vAge">–</div></div>
+      <div class="it"><div class="k">校园网</div><div class="v" id="vWifi">–</div>
+        <div class="bar"><i id="vBars"></i></div></div>
+      <div class="it"><div class="k">信号 / 在线</div><div class="v" id="vRssi">–</div></div>
+      <div class="it full"><div class="k">ESP 地址</div><div class="v" id="vIp">–</div></div>
+      <div class="it"><div class="k">机箱电源键</div><div class="v" id="vBtn">–</div></div>
+      <div class="it"><div class="k">最近事件</div><div class="v" id="vEvt">–</div></div>
+    </div>
+
+    <button class="big" id="btnPress" disabled>⏻ 按一下电源键（开机 / 关机）</button>
+    <button class="danger" id="btnForce" disabled>长按 6 秒 · 强制断电</button>
+
+    <details>
+      <summary>连接设置（换成你自己的 broker 就填这里）</summary>
+      <div class="settings">
+        <label>WebSocket 地址</label>
+        <input id="sUrl" placeholder="wss://broker.emqx.io:8084/mqtt">
+        <label>主题前缀（等于密码，别告诉别人）</label>
+        <input id="sBase" placeholder="pcbtn/YOUR_UNIQUE_SECRET_TOPIC">
+        <label>用户名（公共 broker 留空）</label>
+        <input id="sUser" placeholder="">
+        <label>密码</label>
+        <input id="sPass" placeholder="">
+        <div class="row">
+          <button class="primary" id="sSave">保存并重连</button>
+          <button id="sReset">恢复默认</button>
+        </div>
+      </div>
+    </details>
+  </div>
+
+  <div class="log" id="log"></div>
+  <div class="ft">
+    这个页面可以直接存在手机上打开，4G 也能用。<br>
+    命令主题 <code id="tCmd">…</code> · 状态主题 <code id="tState">…</code>
+  </div>
+</div>
+
+<script>
+/* ---------------- 配置 ---------------- */
+const DEF = {
+  url : 'wss://broker.emqx.io:8084/mqtt',
+  base: 'pcbtn/CHANGEME',      /* ← 改成你固件里的主题前缀（等于密码，别提交到公开仓库） */
+  user: '',
+  pass: ''
+};
+let CFG = Object.assign({}, DEF, JSON.parse(localStorage.getItem('pcbtn_cfg') || '{}'));
+
+/* ---------------- 加载 mqtt.js（多 CDN 兜底） ---------------- */
+const CDNS = [
+  'https://cdn.jsdelivr.net/npm/mqtt@5.10.1/dist/mqtt.min.js',
+  'https://fastly.jsdelivr.net/npm/mqtt@5.10.1/dist/mqtt.min.js',
+  'https://unpkg.com/mqtt@5.10.1/dist/mqtt.min.js',
+  'https://cdn.staticfile.net/mqtt/5.10.1/mqtt.min.js'
+];
+(function load(i){
+  if (i >= CDNS.length) { log('mqtt.js 加载失败：检查网络或把 mqtt.min.js 下载到同目录', 'w'); return; }
+  const s = document.createElement('script');
+  s.src = CDNS[i];
+  s.onload = () => boot();
+  s.onerror = () => { log('CDN 失败，换下一个…'); load(i + 1); };
+  document.head.appendChild(s);
+})(0);
+
+/* ---------------- 小工具 ---------------- */
+const $ = id => document.getElementById(id);
+let nLog = 0;
+function log(t, cls){
+  const d = document.createElement('div');
+  d.className = cls || '';
+  d.innerHTML = '<b>' + new Date().toLocaleTimeString() + '</b> ' + t;
+  $('log').prepend(d);
+  while ($('log').children.length > 60) $('log').lastChild.remove();
+}
+function fmtUp(s){
+  s = s|0;
+  const d = (s/86400)|0, h = ((s%86400)/3600)|0, m = ((s%3600)/60)|0;
+  if (d) return d + ' 天 ' + h + ' 小时';
+  if (h) return h + ' 小时 ' + m + ' 分';
+  return m + ' 分 ' + (s%60) + ' 秒';
+}
+function setDot(state){ $('dot').className = 'dot' + (state ? ' ' + state : ''); }
+
+/* ---------------- 状态渲染 ---------------- */
+let lastMsgAt = 0, lastJson = null;
+function render(){
+  if (!lastJson) return;
+  const j = lastJson;
+  const fresh = (Date.now() - lastMsgAt) < 90000;     // 90 秒内有上报才算在线
+  const on = fresh && (j.online === 1);
+  $('vOnline').innerHTML = on ? '<span style="color:#4ade80">● 在线</span>'
+                             : '<span style="color:#f87171">● 离线</span>';
+  setDot(on ? 'on' : 'off');
+  if (j.online === 0) { $('vAge').textContent = '设备已下线（遗嘱消息）'; }
+  $('vWifi').textContent = j.wifi ? '已连接' : '未连接';
+  $('vRssi').innerHTML = (j.rssi || 0) + ' dBm <small>· ' + fmtUp(j.up) + '</small>';
+  const pct = Math.max(4, Math.min(100, (j.rssi + 95) * 2.2));
+  const bars = $('vBars');
+  bars.style.width = pct + '%';
+  bars.className = pct > 60 ? '' : (pct > 30 ? 'mid' : 'low');
+  $('vIp').textContent = j.ip || '–';
+  $('vBtn').innerHTML = j.btn ? '<span style="color:#fbbf24">按下</span>' : '松开';
+  $('vEvt').textContent = (j.evt || '–') + '  #' + (j.n || 0);
+  $('btnPress').disabled = false;
+  $('btnForce').disabled = false;
+}
+setInterval(() => {
+  if (!lastMsgAt) return;
+  const age = ((Date.now() - lastMsgAt) / 1000) | 0;
+  if (lastJson && lastJson.online !== 0) $('vAge').textContent = age + ' 秒前';
+  render();
+}, 1000);
+
+/* ---------------- 连接 ---------------- */
+let client = null;
+function topics(){
+  return { cmd: CFG.base + '/set', state: CFG.base + '/state' };
+}
+function boot(){
+  const t = topics();
+  $('tCmd').textContent = t.cmd;
+  $('tState').textContent = t.state;
+  $('sUrl').value = CFG.url; $('sBase').value = CFG.base;
+  $('sUser').value = CFG.user; $('sPass').value = CFG.pass;
+
+  if (client) { try { client.end(true); } catch(e){} }
+  log('连接 ' + CFG.url + ' …');
+  const opt = {
+    clientId: 'pcbtn_dash_' + Math.random().toString(16).slice(2, 10),
+    clean: true, connectTimeout: 8000, reconnectPeriod: 4000, keepalive: 30
+  };
+  if (CFG.user) { opt.username = CFG.user; opt.password = CFG.pass; }
+  client = mqtt.connect(CFG.url, opt);
+
+  client.on('connect', () => {
+    $('chConn').textContent = 'MQTT 已连接';
+    $('chConn').style.color = '#4ade80';
+    log('MQTT 已连接，订阅 ' + t.state, 'r');
+    client.subscribe(t.state);
+    client.publish(t.cmd, 'status');       // 问一句当前状态
+  });
+  client.on('reconnect', () => { $('chConn').textContent = '重连中…'; $('chConn').style.color = '#fbbf24'; });
+  client.on('close', () => { $('chConn').textContent = '连接断开'; $('chConn').style.color = '#fca5a5'; setDot('off'); });
+  client.on('error', e => { log('MQTT 错误：' + e.message, 'w'); });
+  client.on('message', (topic, msg) => {
+    const s = msg.toString();
+    lastMsgAt = Date.now();
+    try {
+      lastJson = JSON.parse(s);
+      if (lastJson.online !== 0) log('状态：' + s);
+    } catch(e) { log('无法解析：' + s, 'w'); }
+    render();
+  });
+}
+
+/* ---------------- 按钮 ---------------- */
+$('btnPress').onclick = () => send('press', '按一下电源键');
+$('btnForce').onclick = () => {
+  if (confirm('长按电源键 6 秒 = 硬断电（等同直接拔电）。\n只在你确认机器卡死时用，确定继续？'))
+    send('force', '强制断电（长按 6 秒）');
+};
+function send(payload, label){
+  if (!client || !client.connected) { log('还没连上 broker，先等一下', 'w'); return; }
+  client.publish(topics().cmd, payload);
+  log('已发送：' + label);
+}
+
+/* ---------------- 设置 ---------------- */
+$('sSave').onclick = () => {
+  CFG = { url: $('sUrl').value.trim(), base: $('sBase').value.trim().replace(/\/+$/,''),
+          user: $('sUser').value, pass: $('sPass').value };
+  localStorage.setItem('pcbtn_cfg', JSON.stringify(CFG));
+  $('log').innerHTML = ''; lastJson = null; lastMsgAt = 0;
+  log('已保存设置，重新连接…');
+  boot();
+};
+$('sReset').onclick = () => {
+  localStorage.removeItem('pcbtn_cfg'); CFG = Object.assign({}, DEF);
+  $('log').innerHTML = ''; lastJson = null; lastMsgAt = 0;
+  log('已恢复默认，重新连接…'); boot();
+};
+log('控制台已加载');
+</script>
+</body>
+</html>
