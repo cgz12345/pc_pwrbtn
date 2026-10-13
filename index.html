@@ -580,18 +580,43 @@
         <div class="btn-action-label" style="color:var(--accent-red)">HOLD</div>
       </div>
 
-      <!-- 蓝牙辅助提示卡片 -->
+      <!-- 蓝牙交互式完整说明卡片 -->
       <div class="ble-card">
         <div>
-          <div style="font-weight:600;color:var(--text-main);margin-bottom:2px">蓝牙配置模式就绪</div>
-          <div style="font-size:11px">设备广播名: pc_pwrbtn (PIN: 123456)</div>
+          <div style="font-weight:600;color:var(--text-main);margin-bottom:2px">蓝牙无线治理就绪</div>
+          <div style="font-size:11px">设备广播名: pc_pwrbtn (PIN: 831742)</div>
         </div>
-        <button class="ble-btn" onclick="showToast('用 nRF Connect 连 pc_pwrbtn 即可改配置')">改参数说明</button>
+        <button class="ble-btn" onclick="openBleGuide()">配置指南与JSON</button>
       </div>
     </div>
   </div>
 
   <div class="toast" id="toast"></div>
+
+
+  <!-- 蓝牙配置详细指南模态窗 -->
+  <div class="modal-overlay" id="bleGuideModal">
+    <div class="modal-card" style="max-width:360px;max-height:85vh;overflow-y:auto">
+      <div class="modal-title" style="color:#60a5fa">📶 蓝牙免插线全量配置指南</div>
+      <div class="modal-body" style="font-size:12px;line-height:1.6;display:flex;flex-direction:column;gap:8px">
+        <p><b>1. 下载 App：</b>手机下载 <code>nRF Connect</code>（安卓）或 <code>LightBlue</code>（iOS）。</p>
+        <p><b>2. 扫描并连接：</b>搜索并连接名为 <b>pc_pwrbtn</b> 的设备。</p>
+        <p><b>3. 找到配置特征：</b>点击进入 Service <code>7a1e0001-...</code>，找到 Characteristic <code>7a1e0002-...</code>（配置通道）。</p>
+        <p><b>4. 写入参数 JSON：</b>点击上传箭头(Write)，粘贴你要修改的参数（必须携带 <code>"pin":"831742"</code> 安全口令）：</p>
+        <div style="background:rgba(0,0,0,0.4);padding:8px;border-radius:8px;font-family:monospace;font-size:11px;color:#93c5fd;word-break:break-all">
+          {"pin":"831742","ssid":"新WiFi","pass":"新密码","topic":"pcbtn/新前缀"}
+        </div>
+        <p><b>引脚自由映射示例：</b></p>
+        <div style="background:rgba(0,0,0,0.4);padding:8px;border-radius:8px;font-family:monospace;font-size:11px;color:#93c5fd;word-break:break-all">
+          {"pin":"831742","pwr":5,"rst":6,"pled":7,"hdled":8,"inv":0}
+        </div>
+        <p><b>5. 生效：</b>写入后 ESP32 会在 2.5 秒内自动重启生效，无需重新插数据线烧录！</p>
+      </div>
+      <div class="modal-actions">
+        <button class="modal-btn cancel" onclick="closeBleGuide()">知道了，关闭</button>
+      </div>
+    </div>
+  </div>
 
   <!-- 强制断电确认模态窗 -->
   <div class="modal-overlay" id="dangerModal">
@@ -760,6 +785,14 @@
     function confirmForceOff() {
       closeDangerModal();
       sendCmd('force', '长按强制断电 (6s)');
+    }
+
+
+    function openBleGuide() {
+      document.getElementById('bleGuideModal').classList.add('active');
+    }
+    function closeBleGuide() {
+      document.getElementById('bleGuideModal').classList.remove('active');
     }
 
     window.addEventListener('DOMContentLoaded', () => {

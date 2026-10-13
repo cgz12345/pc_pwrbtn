@@ -201,10 +201,10 @@ static int readPcPower() {
 
 static void buildStateJson(char* out, size_t maxLen, const char* lastAct) {
   int pcOn = readPcPower();
-  uint32_t hddAgo = lastHddActMs ? ((millis() - lastHddActMs) / 1000) : 99999;
+  uint32_t diskAgo = lastHddActMs ? ((millis() - lastHddActMs) / 1000) : 99999;
   snprintf(out, maxLen,
-    "{\"online\":1,\"pc\":%d,\"hdd_act\":%lu,\"hdd_ago\":%lu,\"rssi\":%d,\"ip\":\"%s\",\"uptime\":%lu,\"last\":\"%s\"}",
-    pcOn, (unsigned long)hddActCount, (unsigned long)hddAgo,
+    "{\"online\":1,\"pc\":%d,\"disk_act\":%lu,\"disk_ago\":%lu,\"rssi\":%d,\"ip\":\"%s\",\"uptime\":%lu,\"last\":\"%s\"}",
+    pcOn, (unsigned long)hddActCount, (unsigned long)diskAgo,
     WiFi.status() == WL_CONNECTED ? (int)WiFi.RSSI() : 0,
     WiFi.status() == WL_CONNECTED ? WiFi.localIP().toString().c_str() : "--",
     (unsigned long)(millis() / 1000), lastAct ? lastAct : "idle");
@@ -472,8 +472,9 @@ void setup() {
   setupOpenDrain(cfg.pinPwr);
   setupOpenDrain(cfg.pinRst);
 
-  // 指示灯引脚配置
-  if (cfg.pinPled != 0) pinMode(cfg.pinPled, INPUT);
+  // 指示灯引脚配置：PLED 启用内部弱下拉（防止未插线时悬空浮动误判为开机）
+  if (cfg.pinPled != 0) pinMode(cfg.pinPled, INPUT_PULLDOWN);
+  // 存储活动灯启用内部上拉（平时高电平，读盘接地触发）
   if (cfg.pinHdled != 0) pinMode(cfg.pinHdled, INPUT_PULLUP);
 
   uint64_t mac = ESP.getEfuseMac();
