@@ -482,9 +482,9 @@
       </div>
       <div class="header-badges">
         <!-- 硬盘活动动态闪烁指示灯 -->
-        <div class="badge" title="硬盘读写活动状态">
+        <div class="badge" title="NVMe / SSD 存储读写活动">
           <span class="hdd-dot" id="hddDot"></span>
-          <span>HDD</span>
+          <span>SSD</span>
         </div>
         <!-- MQTT 连接指示 -->
         <div class="badge">
@@ -755,12 +755,13 @@
         val.innerText = '🟢 电脑运行中';
         val.style.color = '#10b981';
       } else if (pcState === 0) {
+        // 如果检测到 0，但有可能是还没接线或者刚启动
         orb.className = 'power-orb shutdown';
-        val.innerText = '⚪ 电脑已关机';
+        val.innerText = '⚪ 电脑已关机 / 未接灯线';
         val.style.color = '#94a3b8';
       } else {
         orb.className = 'power-orb running';
-        val.innerText = '控制器在线 (未接灯)';
+        val.innerText = '控制器就绪 (免接线)';
         val.style.color = '#38bdf8';
       }
     }
