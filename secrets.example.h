@@ -20,10 +20,10 @@
 #define DEF_TOPIC       "pcbtn/改成别人猜不到的后缀"   // 主题前缀（等于密码）
 
 // ---- 引脚（0 = 不接）----
-#define DEF_PIN_PWR     5                      // 电源键（开漏 → PWR_SW）
-#define DEF_PIN_RST     0                      // 复位键（开漏 → RESET_SW）
-#define DEF_PIN_VSEN    0                      // 开机侦测（电源灯/SATA 5V 经分压）
-#define DEF_PIN_ACT     0                      // 硬盘活动侦测（硬盘灯经分压）
+#define DEF_PIN_PWR     4                      // 电源键（开漏 → PWR_SW）
+#define DEF_PIN_RST     5                      // 复位键（开漏 → RESET_SW）
+#define DEF_PIN_VSEN    6                      // 开机侦测（电源灯/SATA 5V 经分压）
+#define DEF_PIN_ACT     7                      // 硬盘活动侦测（硬盘灯经分压）
 #define DEF_VSEN_INV    0                      // 0=高电平表示开机
 
 // ---- 蓝牙改配置口令 ----

@@ -127,10 +127,10 @@ static void loadConfig() {
   cfg.mqttPort = MQTT_PORT;
   strlcpy(cfg.topic, MQTT_TOPIC_BASE, sizeof(cfg.topic));
   strlcpy(cfg.blePin, BLE_AUTH_PIN, sizeof(cfg.blePin));
-  cfg.pinPwr   = 5;
-  cfg.pinRst   = 6;
-  cfg.pinPled  = 7;
-  cfg.pinHdled = 8;
+  cfg.pinPwr   = 4;
+  cfg.pinRst   = 5;
+  cfg.pinPled  = 6;
+  cfg.pinHdled = 7;
   cfg.pledInv  = 0;
 
   prefs.begin("pwrbtn", true);
