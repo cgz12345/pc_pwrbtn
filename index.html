@@ -644,6 +644,20 @@
     let toastTimer = null;
     let hddTimer = null;
     let lastHddCount = 0;
+    let lastActiveTimestamp = 0;
+
+    // 前端每秒平滑刷新"xx 秒前"
+    setInterval(() => {
+      if (lastActiveTimestamp > 0) {
+        const sec = Math.floor((Date.now() - lastActiveTimestamp) / 1000);
+        const el = document.getElementById('hddLastTime');
+        if (el) {
+          if (sec <= 1) el.innerText = '刚刚读写';
+          else if (sec < 60) el.innerText = `${sec}s 前`;
+          else el.innerText = `${Math.floor(sec/60)}m 前`;
+        }
+      }
+    }, 1000);
 
     function showToast(msg) {
       const t = document.getElementById('toast');
@@ -710,25 +724,30 @@
         document.getElementById('wifiRssi').innerText = `${data.rssi || '--'} dBm`;
         document.getElementById('espIp').innerText = data.ip || '--';
 
-        // 硬盘指示灯捕获
-        if (data.hdd_act !== undefined) {
-          if (data.hdd_act > lastHddCount) {
-            triggerHddBlink();
-            lastHddCount = data.hdd_act;
-          }
-        }
-        if (data.last === 'hdd_activity') {
+        // 硬盘指示灯捕获与最近读写更新 (兼容 disk_act 与 hdd_act)
+        const actCount = data.disk_act !== undefined ? data.disk_act : data.hdd_act;
+        const actAgo = data.disk_ago !== undefined ? data.disk_ago : data.hdd_ago;
+
+        if (actCount !== undefined && actCount > lastHddCount) {
           triggerHddBlink();
+          lastHddCount = actCount;
+          lastActiveTimestamp = Date.now();
         }
 
-        // 硬盘最后活动时间
-        if (data.hdd_ago !== undefined) {
-          if (data.hdd_ago >= 99999) {
+        if (data.last === 'hdd_activity' || data.last === 'disk_activity') {
+          triggerHddBlink();
+          lastActiveTimestamp = Date.now();
+        }
+
+        if (actAgo !== undefined) {
+          if (actAgo >= 99999) {
             document.getElementById('hddLastTime').innerText = '暂无活动';
-          } else if (data.hdd_ago === 0) {
+          } else if (actAgo === 0) {
             document.getElementById('hddLastTime').innerText = '刚刚读写';
+            lastActiveTimestamp = Date.now();
           } else {
-            document.getElementById('hddLastTime').innerText = `${data.hdd_ago}s 前`;
+            document.getElementById('hddLastTime').innerText = `${actAgo}s 前`;
+            lastActiveTimestamp = Date.now() - (actAgo * 1000);
           }
         }
 
