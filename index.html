@@ -562,7 +562,7 @@
             <div class="btn-desc">长按切断供电（掉电即松开防二次开机）</div>
           </div>
         </div>
-        <div class="btn-action-label" style="color:var(--accent-red)">HOLD</div>
+        <div class="btn-action-label" >HOLD</div>
       </div>
 
       <!-- 3. 硬件复位（硬重启） -->
@@ -599,7 +599,7 @@
   <!-- 蓝牙配置详细指南模态窗 -->
   <div class="modal-overlay" id="bleGuideModal">
     <div class="modal-card" style="max-width:360px;max-height:85vh;overflow-y:auto">
-      <div class="modal-title" style="color:#60a5fa">📶 蓝牙免插线全量配置指南</div>
+      <div class="modal-title" style="color:var(--text-main)" style="color:#60a5fa">📶 蓝牙免插线全量配置指南</div>
       <div class="modal-body" style="font-size:12px;line-height:1.6;display:flex;flex-direction:column;gap:8px">
         <p><b>1. 下载 App：</b>手机下载 <code>nRF Connect</code>（安卓）或 <code>LightBlue</code>（iOS）。</p>
         <p><b>2. 扫描并连接：</b>搜索并连接名为 <b>pc_pwrbtn</b> 的设备。</p>
@@ -624,7 +624,7 @@
   <!-- 电源按键确认模态窗 -->
   <div class="modal-overlay" id="powerModal">
     <div class="modal-card">
-      <div class="modal-title" style="color:var(--accent-green)">⚡ 确认触发电源键？</div>
+      <div class="modal-title" style="color:var(--text-main)" >⚡ 确认触发电源键？</div>
       <div class="modal-body">
         将向主机主板发送一次 0.5 秒电源按键脉冲。<br>
         • 电脑已开机时：将触发系统正常关机流程。<br>
@@ -632,7 +632,7 @@
       </div>
       <div class="modal-actions">
         <button class="modal-btn cancel" onclick="closePowerModal()">取消</button>
-        <button class="modal-btn" style="background:var(--accent-green);color:#04140a" onclick="confirmPower()">确认执行</button>
+        <button class="modal-btn" style="background:rgba(255,255,255,0.15);color:var(--text-main)" onclick="confirmPower()">确认执行</button>
       </div>
     </div>
   </div>
@@ -640,14 +640,14 @@
   <!-- 硬件复位确认模态窗 -->
   <div class="modal-overlay" id="resetModal">
     <div class="modal-card">
-      <div class="modal-title" style="color:var(--accent-amber)">🔄 确认硬件复位？</div>
+      <div class="modal-title" style="color:var(--text-main)" >🔄 确认硬件复位？</div>
       <div class="modal-body">
         将向主板发送硬件 RESET 脉冲，等同于按下机箱硬重启键。<br>
         操作系统将直接中断并立即重新引导，未保存的数据可能丢失。
       </div>
       <div class="modal-actions">
         <button class="modal-btn cancel" onclick="closeResetModal()">取消</button>
-        <button class="modal-btn" style="background:var(--accent-amber);color:#04140a" onclick="confirmReset()">确认复位</button>
+        <button class="modal-btn" style="background:rgba(255,255,255,0.15);color:var(--text-main)" onclick="confirmReset()">确认复位</button>
       </div>
     </div>
   </div>
@@ -655,13 +655,13 @@
   <!-- 强制断电确认模态窗 -->
   <div class="modal-overlay" id="dangerModal">
     <div class="modal-card">
-      <div class="modal-title">⚠️ 确认强制断电？</div>
+      <div class="modal-title" style="color:var(--text-main)">⚠️ 确认强制断电？</div>
       <div class="modal-body">
         长按电源键 6 秒等同于拔掉电源插头。仅在系统完全卡死时使用，可能导致未保存的文件丢失。
       </div>
       <div class="modal-actions">
         <button class="modal-btn cancel" onclick="closeDangerModal()">取消</button>
-        <button class="modal-btn confirm-danger" onclick="confirmForceOff()">确认强制断电</button>
+        <button class="modal-btn" style="background:rgba(255,255,255,0.15);color:var(--text-main)" onclick="confirmForceOff()">确认强制断电</button>
       </div>
     </div>
   </div>
