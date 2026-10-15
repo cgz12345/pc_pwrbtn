@@ -131,7 +131,7 @@ static void loadConfig() {
   cfg.pinRst   = 5;
   cfg.pinPled  = 6;
   cfg.pinHdled = 7;
-  cfg.pledInv  = 0;
+  cfg.pledInv  = 1;
 
   prefs.begin("pwrbtn", true);
   if (prefs.isKey("cfg_saved")) {
@@ -473,7 +473,8 @@ void setup() {
   setupOpenDrain(cfg.pinRst);
 
   // 指示灯引脚配置：PLED 启用内部弱下拉（防止未插线时悬空浮动误判为开机）
-  if (cfg.pinPled != 0) pinMode(cfg.pinPled, INPUT_PULLDOWN);
+  // PLED- 负极模式：启用内部弱上拉，开机接地为 0V，关机浮高为 3.3V
+  if (cfg.pinPled != 0) pinMode(cfg.pinPled, INPUT_PULLUP);
   // 存储活动灯启用内部上拉（平时高电平，读盘接地触发）
   if (cfg.pinHdled != 0) pinMode(cfg.pinHdled, INPUT_PULLUP);
 

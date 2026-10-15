@@ -24,7 +24,7 @@
 #define DEF_PIN_RST     5                      // 复位键（开漏 → RESET_SW）
 #define DEF_PIN_VSEN    6                      // 开机侦测（电源灯/SATA 5V 经分压）
 #define DEF_PIN_ACT     7                      // 硬盘活动侦测（硬盘灯经分压）
-#define DEF_VSEN_INV    0                      // 0=高电平表示开机
+#define DEF_VSEN_INV    1                      // 0=高电平表示开机
 
 // ---- 蓝牙改配置口令 ----
 #define DEF_BLE_PIN     "123456"
