@@ -3,10 +3,10 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
-  <meta name="theme-color" content="#080a10">
+  <meta name="theme-color" content="#07090e">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="电脑电源">
+  <meta name="apple-mobile-web-app-title" content="电脑控制">
   <title>电脑远程控制中心</title>
   
   <link rel="manifest" href="manifest.json">
@@ -17,19 +17,18 @@
 
   <style>
     :root {
-      --bg: #080a10;
-      --card-bg: rgba(20, 24, 35, 0.65);
-      --card-border: rgba(255, 255, 255, 0.08);
-      --card-border-hover: rgba(255, 255, 255, 0.15);
+      --bg: #07090e;
+      --card-bg: rgba(22, 28, 44, 0.72);
+      --card-border: rgba(255, 255, 255, 0.09);
+      --card-border-hover: rgba(255, 255, 255, 0.18);
       --text-main: #f8fafc;
       --text-muted: #94a3b8;
       --text-dim: #64748b;
       --accent-green: #10b981;
-      --accent-green-glow: rgba(16, 185, 129, 0.25);
+      --accent-green-glow: rgba(16, 185, 129, 0.45);
       --accent-amber: #f59e0b;
-      --accent-amber-glow: rgba(245, 158, 11, 0.4);
-      --btn-bg: rgba(255, 255, 255, 0.04);
-      --btn-hover: rgba(255, 255, 255, 0.07);
+      --accent-amber-glow: rgba(245, 158, 11, 0.45);
+      --btn-bg: rgba(255, 255, 255, 0.045);
       --btn-active: rgba(255, 255, 255, 0.12);
     }
 
@@ -44,15 +43,15 @@
     body {
       background-color: var(--bg);
       background-image: 
-        radial-gradient(at 15% 10%, rgba(30, 41, 59, 0.45) 0px, transparent 65%),
-        radial-gradient(at 85% 90%, rgba(15, 23, 42, 0.5) 0px, transparent 65%);
+        radial-gradient(at 0% 0%, rgba(30, 58, 138, 0.32) 0px, transparent 55%),
+        radial-gradient(at 100% 100%, rgba(16, 185, 129, 0.18) 0px, transparent 55%);
       min-height: 100vh;
-      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, "PingFang SC", "Microsoft YaHei", sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, "PingFang SC", "Microsoft YaHei", sans-serif;
       color: var(--text-main);
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: max(24px, env(safe-area-inset-top)) 18px max(34px, env(safe-area-inset-bottom));
+      padding: max(20px, env(safe-area-inset-top)) 16px max(32px, env(safe-area-inset-bottom));
       line-height: 1.5;
     }
 
@@ -61,7 +60,7 @@
       max-width: 410px;
       display: flex;
       flex-direction: column;
-      gap: 20px;
+      gap: 18px;
     }
 
     /* 顶部导航 */
@@ -75,31 +74,30 @@
     .brand {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 10px;
     }
 
     .brand-icon {
-      width: 32px;
-      height: 32px;
-      border-radius: 10px;
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid var(--card-border);
+      width: 34px;
+      height: 34px;
+      border-radius: 11px;
+      background: rgba(16, 185, 129, 0.12);
+      border: 1px solid rgba(16, 185, 129, 0.25);
       display: flex;
       align-items: center;
       justify-content: center;
     }
 
     .brand-icon svg {
-      width: 18px;
-      height: 18px;
-      stroke: var(--text-main);
+      width: 19px;
+      height: 19px;
+      stroke: var(--accent-green);
     }
 
     .brand h1 {
       font-size: 19px;
       font-weight: 700;
       letter-spacing: -0.4px;
-      color: var(--text-main);
     }
 
     .header-badges {
@@ -115,16 +113,16 @@
       font-size: 12px;
       font-weight: 500;
       color: var(--text-muted);
-      background: rgba(255, 255, 255, 0.03);
-      padding: 5px 12px;
+      background: rgba(255, 255, 255, 0.04);
+      padding: 5px 11px;
       border-radius: 99px;
       border: 1px solid var(--card-border);
       backdrop-filter: blur(12px);
     }
 
     .status-dot {
-      width: 6px;
-      height: 6px;
+      width: 7px;
+      height: 7px;
       border-radius: 50%;
       background-color: var(--accent-amber);
       transition: all 0.3s ease;
@@ -135,12 +133,12 @@
       box-shadow: 0 0 8px var(--accent-green);
     }
 
-    /* 硬盘指示灯：琥珀金跳动脉冲 */
+    /* 硬盘指示灯：琥珀金脉冲 */
     .hdd-dot {
-      width: 6px;
-      height: 6px;
+      width: 7px;
+      height: 7px;
       border-radius: 50%;
-      background-color: rgba(255, 255, 255, 0.15);
+      background-color: rgba(255, 255, 255, 0.2);
       transition: all 0.08s ease;
     }
 
@@ -150,12 +148,12 @@
       transform: scale(1.35);
     }
 
-    /* 主机监视大卡片 */
+    /* 核心状态卡片 (带大光环) */
     .status-card {
       background: var(--card-bg);
       border: 1px solid var(--card-border);
       border-radius: 26px;
-      padding: 28px 22px 22px;
+      padding: 26px 20px 22px;
       backdrop-filter: blur(25px);
       -webkit-backdrop-filter: blur(25px);
       box-shadow: 0 24px 48px -18px rgba(0, 0, 0, 0.6);
@@ -165,60 +163,61 @@
       position: relative;
     }
 
-    .monitor-display {
-      width: 92px;
-      height: 92px;
-      border-radius: 24px;
+    /* 经典大光环：立式工作站主机图标，开机翡翠绿微光，关机暗灰 */
+    .power-orb {
+      width: 96px;
+      height: 96px;
+      border-radius: 50%;
       background: rgba(255, 255, 255, 0.03);
-      border: 1px solid var(--card-border);
+      border: 2px solid var(--card-border);
       display: flex;
       align-items: center;
       justify-content: center;
-      margin-bottom: 18px;
+      margin-bottom: 16px;
       position: relative;
       transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
-    .monitor-display svg {
+    .power-orb svg {
       width: 44px;
       height: 44px;
       stroke: var(--text-dim);
-      transition: all 0.4s ease;
+      transition: all 0.3s ease;
     }
 
-    .monitor-display.running {
-      border-color: rgba(16, 185, 129, 0.4);
-      background: rgba(16, 185, 129, 0.08);
-      box-shadow: 0 0 35px var(--accent-green-glow);
+    .power-orb.running {
+      border-color: var(--accent-green);
+      background: rgba(16, 185, 129, 0.1);
+      box-shadow: 0 0 38px var(--accent-green-glow);
     }
-    .monitor-display.running svg {
+    .power-orb.running svg {
       stroke: var(--accent-green);
-      filter: drop-shadow(0 0 8px rgba(16, 185, 129, 0.6));
+      filter: drop-shadow(0 0 8px var(--accent-green));
     }
 
-    .monitor-display.shutdown {
-      border-color: var(--card-border);
+    .power-orb.shutdown {
+      border-color: rgba(255, 255, 255, 0.14);
       background: rgba(255, 255, 255, 0.02);
       box-shadow: none;
     }
-    .monitor-display.shutdown svg {
-      stroke: var(--text-dim);
+    .power-orb.shutdown svg {
+      stroke: #64748b;
     }
 
     .status-label {
       font-size: 12px;
       color: var(--text-dim);
-      margin-bottom: 5px;
+      margin-bottom: 4px;
       letter-spacing: 0.8px;
       text-transform: uppercase;
       font-weight: 600;
     }
 
     .status-value {
-      font-size: 23px;
+      font-size: 24px;
       font-weight: 700;
       letter-spacing: -0.4px;
-      margin-bottom: 22px;
+      margin-bottom: 18px;
       transition: color 0.3s ease;
     }
 
@@ -228,7 +227,7 @@
       width: 100%;
       gap: 9px;
       border-top: 1px solid rgba(255, 255, 255, 0.06);
-      padding-top: 18px;
+      padding-top: 16px;
     }
 
     .info-item {
@@ -236,7 +235,7 @@
       flex-direction: column;
       gap: 3px;
       background: rgba(255, 255, 255, 0.025);
-      padding: 10px 14px;
+      padding: 9px 13px;
       border-radius: 14px;
       border: 1px solid rgba(255, 255, 255, 0.035);
     }
@@ -254,7 +253,7 @@
       font-variant-numeric: tabular-nums;
     }
 
-    /* 控制按键区域 */
+    /* 控制按键区域（统一深色磨砂玻璃拟态，无刺眼红框） */
     .section-title {
       font-size: 12px;
       font-weight: 600;
@@ -273,7 +272,7 @@
     .btn {
       position: relative;
       width: 100%;
-      min-height: 68px;
+      min-height: 66px;
       border-radius: 20px;
       border: 1px solid var(--card-border);
       background: var(--card-bg);
@@ -290,7 +289,6 @@
 
     .btn:hover {
       border-color: var(--card-border-hover);
-      background: var(--btn-hover);
     }
 
     .btn:active {
@@ -316,8 +314,8 @@
     }
 
     .btn-icon-box svg {
-      width: 20px;
-      height: 20px;
+      width: 21px;
+      height: 21px;
       stroke: var(--text-main);
     }
 
@@ -347,7 +345,7 @@
       border: 1px solid rgba(255, 255, 255, 0.04);
     }
 
-    /* 蓝牙快捷操作卡片 */
+    /* 蓝牙提示卡片 */
     .ble-card {
       background: rgba(255, 255, 255, 0.02);
       border: 1px solid var(--card-border);
@@ -377,7 +375,6 @@
       transform: scale(0.96);
     }
 
-    /* 吐司通知 */
     .toast {
       position: fixed;
       bottom: max(24px, env(safe-area-inset-bottom));
@@ -402,7 +399,7 @@
       transform: translateY(0);
     }
 
-    /* 模态弹窗系统 */
+    /* 模态弹窗 */
     .modal-overlay {
       position: fixed;
       inset: 0;
@@ -499,25 +496,25 @@
 <body>
 
   <div class="container">
-    <!-- 顶部状态栏 -->
+    <!-- 顶部导航 -->
     <header>
       <div class="brand">
         <div class="brand-icon">
           <svg viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-            <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
-            <line x1="8" y1="21" x2="16" y2="21"></line>
-            <line x1="12" y1="17" x2="12" y2="21"></line>
+            <rect x="4" y="2" width="16" height="20" rx="3" ry="3"></rect>
+            <circle cx="12" cy="7" r="1.5" fill="currentColor"></circle>
+            <line x1="8" y1="16" x2="16" y2="16"></line>
           </svg>
         </div>
         <h1>主机控制台</h1>
       </div>
       <div class="header-badges">
-        <!-- 硬盘活动状态 -->
+        <!-- 硬盘活动状态指示灯 -->
         <div class="badge" title="硬盘读写活动状态">
           <span class="hdd-dot" id="hddDot"></span>
           <span>硬盘</span>
         </div>
-        <!-- MQTT 连接状态 -->
+        <!-- MQTT 连通状态 -->
         <div class="badge">
           <span class="status-dot" id="cloudDot"></span>
           <span id="cloudText">MQTT</span>
@@ -525,14 +522,15 @@
       </div>
     </header>
 
-    <!-- 核心主机运行监视卡片（非按键，只读监视屏） -->
+    <!-- 核心状态大光环（恢复经典的呼吸光环，中央为立式主机专属图标，非开关按键） -->
     <div class="status-card">
-      <div class="monitor-display shutdown" id="monitorDisplay">
+      <div class="power-orb shutdown" id="powerOrb">
         <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-          <rect x="2" y="3" width="20" height="14" rx="2"></rect>
-          <line x1="8" y1="21" x2="16" y2="21"></line>
-          <line x1="12" y1="17" x2="12" y2="21"></line>
-          <circle cx="12" cy="10" r="2.5" fill="currentColor"></circle>
+          <!-- 立式主机图标：明确是整台电脑的监视，不是电源开关按钮 -->
+          <rect x="5" y="2" width="14" height="20" rx="3"></rect>
+          <line x1="9" y1="6" x2="15" y2="6"></line>
+          <line x1="9" y1="9" x2="11" y2="9"></line>
+          <circle cx="12" cy="16" r="1.5" fill="currentColor"></circle>
         </svg>
       </div>
       <div class="status-label">主机电源状态</div>
@@ -558,7 +556,7 @@
       </div>
     </div>
 
-    <!-- 控制命令按键区（顺序：关机/开机 -> 强关 -> 重启，全统一纯色玻璃态） -->
+    <!-- 控制按键（顺序：关机/开机 -> 强关 -> 重启，统一深色磨砂玻璃，消灭红框） -->
     <div class="section-title">操作命令</div>
     <div class="controls-grid">
       <!-- 1. 电源按键（关机 / 开机） -->
@@ -822,22 +820,22 @@
     }
 
     function setPcPowerVisual(pcState, espOnline) {
-      const display = document.getElementById('monitorDisplay');
+      const orb = document.getElementById('powerOrb');
       const val = document.getElementById('statusValue');
 
       if (!espOnline) {
-        display.className = 'monitor-display shutdown';
+        orb.className = 'power-orb shutdown';
         val.innerText = '控制器离线';
         val.style.color = 'var(--text-dim)';
         return;
       }
 
       if (pcState === 1) {
-        display.className = 'monitor-display running';
+        orb.className = 'power-orb running';
         val.innerText = '🟢 电脑运行中';
         val.style.color = 'var(--accent-green)';
       } else {
-        display.className = 'monitor-display shutdown';
+        orb.className = 'power-orb shutdown';
         val.innerText = '⚪ 电脑已关机';
         val.style.color = 'var(--text-muted)';
       }
@@ -852,7 +850,6 @@
       showToast(`已下发: ${label}`);
     }
 
-    // 弹窗控制
     function openPowerModal() { document.getElementById('powerModal').classList.add('active'); }
     function openForceModal() { document.getElementById('forceModal').classList.add('active'); }
     function openResetModal() { document.getElementById('resetModal').classList.add('active'); }
