@@ -303,20 +303,82 @@
     }
 
     .btn-icon-box {
-      width: 42px;
-      height: 42px;
+      width: 44px;
+      height: 44px;
       border-radius: 14px;
       display: flex;
       align-items: center;
       justify-content: center;
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.06);
+      transition: all 0.2s ease;
     }
 
     .btn-icon-box svg {
-      width: 21px;
-      height: 21px;
-      stroke: var(--text-main);
+      width: 22px;
+      height: 22px;
+      transition: all 0.2s ease;
+    }
+
+    /* 1. 电源按键：翡翠绿微光体系 */
+    .btn-power {
+      border-color: rgba(16, 185, 129, 0.15);
+    }
+    .btn-power .btn-icon-box {
+      background: rgba(16, 185, 129, 0.12);
+      border: 1px solid rgba(16, 185, 129, 0.25);
+    }
+    .btn-power svg {
+      stroke: #34d399;
+    }
+    .btn-power .btn-badge {
+      color: #34d399;
+      background: rgba(16, 185, 129, 0.08);
+      border-color: rgba(16, 185, 129, 0.15);
+    }
+    .btn-power:active {
+      box-shadow: 0 0 24px rgba(16, 185, 129, 0.3);
+      border-color: rgba(16, 185, 129, 0.4);
+    }
+
+    /* 2. 强制断电：深红玫瑰体系（成套和谐，不再突兀孤立） */
+    .btn-force {
+      border-color: rgba(244, 63, 94, 0.15);
+    }
+    .btn-force .btn-icon-box {
+      background: rgba(244, 63, 94, 0.12);
+      border: 1px solid rgba(244, 63, 94, 0.25);
+    }
+    .btn-force svg {
+      stroke: #fb7185;
+    }
+    .btn-force .btn-badge {
+      color: #fb7185;
+      background: rgba(244, 63, 94, 0.08);
+      border-color: rgba(244, 63, 94, 0.15);
+    }
+    .btn-force:active {
+      box-shadow: 0 0 24px rgba(244, 63, 94, 0.3);
+      border-color: rgba(244, 63, 94, 0.4);
+    }
+
+    /* 3. 硬件复位：琥珀落日橙体系 */
+    .btn-reset {
+      border-color: rgba(245, 158, 11, 0.15);
+    }
+    .btn-reset .btn-icon-box {
+      background: rgba(245, 158, 11, 0.12);
+      border: 1px solid rgba(245, 158, 11, 0.25);
+    }
+    .btn-reset svg {
+      stroke: #fbbf24;
+    }
+    .btn-reset .btn-badge {
+      color: #fbbf24;
+      background: rgba(245, 158, 11, 0.08);
+      border-color: rgba(245, 158, 11, 0.15);
+    }
+    .btn-reset:active {
+      box-shadow: 0 0 24px rgba(245, 158, 11, 0.3);
+      border-color: rgba(245, 158, 11, 0.4);
     }
 
     .btn-text {
@@ -560,7 +622,7 @@
     <div class="section-title">操作命令</div>
     <div class="controls-grid">
       <!-- 1. 电源按键（关机 / 开机） -->
-      <div class="btn" onclick="openPowerModal()">
+      <div class="btn btn-power" onclick="openPowerModal()">
         <div class="btn-left">
           <div class="btn-icon-box">
             <svg viewBox="0 0 24 24" fill="none" stroke-width="2.0" stroke-linecap="round" stroke-linejoin="round">
@@ -577,7 +639,7 @@
       </div>
 
       <!-- 2. 长按强关（强制断电） -->
-      <div class="btn" onclick="openForceModal()">
+      <div class="btn btn-force" onclick="openForceModal()">
         <div class="btn-left">
           <div class="btn-icon-box">
             <svg viewBox="0 0 24 24" fill="none" stroke-width="2.0" stroke-linecap="round" stroke-linejoin="round">
@@ -595,7 +657,7 @@
       </div>
 
       <!-- 3. 硬件复位（硬重启） -->
-      <div class="btn" onclick="openResetModal()">
+      <div class="btn btn-reset" onclick="openResetModal()">
         <div class="btn-left">
           <div class="btn-icon-box">
             <svg viewBox="0 0 24 24" fill="none" stroke-width="2.0" stroke-linecap="round" stroke-linejoin="round">
@@ -635,7 +697,7 @@
       </div>
       <div class="modal-actions">
         <button class="modal-btn cancel" onclick="closeModal('powerModal')">取消</button>
-        <button class="modal-btn confirm" onclick="confirmAction('press', '触发电源按键', 'powerModal')">确认执行</button>
+        <button class="modal-btn confirm" onclick="confirmAction('press', '触发电源按键', 'powerModal')" style="background:linear-gradient(135deg,#10b981,#059669);color:#fff">确认执行</button>
       </div>
     </div>
   </div>
@@ -649,7 +711,7 @@
       </div>
       <div class="modal-actions">
         <button class="modal-btn cancel" onclick="closeModal('forceModal')">取消</button>
-        <button class="modal-btn confirm" onclick="confirmAction('force', '长按强制断电', 'forceModal')">确认强关</button>
+        <button class="modal-btn confirm" onclick="confirmAction('force', '长按强制断电', 'forceModal')" style="background:linear-gradient(135deg,#f43f5e,#e11d48);color:#fff">确认强关</button>
       </div>
     </div>
   </div>
@@ -664,7 +726,7 @@
       </div>
       <div class="modal-actions">
         <button class="modal-btn cancel" onclick="closeModal('resetModal')">取消</button>
-        <button class="modal-btn confirm" onclick="confirmAction('reset', '硬件复位 (Reset)', 'resetModal')">确认复位</button>
+        <button class="modal-btn confirm" onclick="confirmAction('reset', '硬件复位 (Reset)', 'resetModal')" style="background:linear-gradient(135deg,#f59e0b,#d97706);color:#fff">确认复位</button>
       </div>
     </div>
   </div>
