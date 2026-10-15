@@ -527,10 +527,10 @@
       </div>
     </div>
 
-    <!-- 控制指令区域 -->
+    <!-- 控制指令区域（顺序：关机/开机 -> 长按强关 -> 硬件复位） -->
     <div class="section-title">操作命令</div>
     <div class="controls-grid">
-      <!-- 电源键 -->
+      <!-- 1. 电源键（普通关机/开机） -->
       <div class="btn btn-power" onclick="openPowerModal()">
         <div class="btn-left">
           <div class="btn-icon-box">
@@ -540,31 +540,14 @@
             </svg>
           </div>
           <div class="btn-text">
-            <div class="btn-title">电源按键</div>
-            <div class="btn-desc">短按 0.5s（开机 / 关机）</div>
+            <div class="btn-title">电源按键（关机 / 开机）</div>
+            <div class="btn-desc">短按 0.5s（触发系统正常关机或开机）</div>
           </div>
         </div>
         <div class="btn-action-label">TAP</div>
       </div>
 
-      <!-- 复位键 -->
-      <div class="btn btn-reset" onclick="openResetModal()">
-        <div class="btn-left">
-          <div class="btn-icon-box">
-            <svg viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-              <polyline points="23 4 23 10 17 10"></polyline>
-              <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
-            </svg>
-          </div>
-          <div class="btn-text">
-            <div class="btn-title">硬件复位</div>
-            <div class="btn-desc">短按 RESET 0.5s（硬重启）</div>
-          </div>
-        </div>
-        <div class="btn-action-label">RESET</div>
-      </div>
-
-      <!-- 强制断电（长按 6 秒） -->
+      <!-- 2. 长按强关 -->
       <div class="btn btn-force" onclick="openDangerModal()">
         <div class="btn-left">
           <div class="btn-icon-box">
@@ -575,11 +558,28 @@
             </svg>
           </div>
           <div class="btn-text">
-            <div class="btn-title">长按强关</div>
-            <div class="btn-desc">长按 6s 强制切断供电</div>
+            <div class="btn-title">长按强关（强制断电）</div>
+            <div class="btn-desc">长按切断供电（掉电即松开防二次开机）</div>
           </div>
         </div>
         <div class="btn-action-label" style="color:var(--accent-red)">HOLD</div>
+      </div>
+
+      <!-- 3. 硬件复位（硬重启） -->
+      <div class="btn btn-reset" onclick="openResetModal()">
+        <div class="btn-left">
+          <div class="btn-icon-box">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="23 4 23 10 17 10"></polyline>
+              <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
+            </svg>
+          </div>
+          <div class="btn-text">
+            <div class="btn-title">硬件复位（硬重启）</div>
+            <div class="btn-desc">短按 RESET 0.5s（操作系统立即重启）</div>
+          </div>
+        </div>
+        <div class="btn-action-label">RESET</div>
       </div>
 
       <!-- 蓝牙交互式完整说明卡片 -->
