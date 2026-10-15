@@ -73,7 +73,7 @@
 #endif
 
 #define MS_PRESS        500
-#define MS_FORCE        6000
+#define MS_FORCE        4500
 #define MS_RESET        500
 
 #define BLE_SVC_UUID    "7a1e0001-9c3b-4f2a-8d5e-1b2c3d4e5f60"

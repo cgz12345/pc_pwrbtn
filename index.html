@@ -531,7 +531,7 @@
     <div class="section-title">操作命令</div>
     <div class="controls-grid">
       <!-- 电源键 -->
-      <div class="btn btn-power" onclick="sendCmd('press', '触发电源键')">
+      <div class="btn btn-power" onclick="openPowerModal()">
         <div class="btn-left">
           <div class="btn-icon-box">
             <svg viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
@@ -548,7 +548,7 @@
       </div>
 
       <!-- 复位键 -->
-      <div class="btn btn-reset" onclick="sendCmd('reset', '触发复位键')">
+      <div class="btn btn-reset" onclick="openResetModal()">
         <div class="btn-left">
           <div class="btn-icon-box">
             <svg viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
@@ -616,6 +616,38 @@
       </div>
       <div class="modal-actions">
         <button class="modal-btn cancel" onclick="closeBleGuide()">知道了，关闭</button>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- 电源按键确认模态窗 -->
+  <div class="modal-overlay" id="powerModal">
+    <div class="modal-card">
+      <div class="modal-title" style="color:var(--accent-green)">⚡ 确认触发电源键？</div>
+      <div class="modal-body">
+        将向主机主板发送一次 0.5 秒电源按键脉冲。<br>
+        • 电脑已开机时：将触发系统正常关机流程。<br>
+        • 电脑已关机时：将触发正常开机启动。
+      </div>
+      <div class="modal-actions">
+        <button class="modal-btn cancel" onclick="closePowerModal()">取消</button>
+        <button class="modal-btn" style="background:var(--accent-green);color:#04140a" onclick="confirmPower()">确认执行</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 硬件复位确认模态窗 -->
+  <div class="modal-overlay" id="resetModal">
+    <div class="modal-card">
+      <div class="modal-title" style="color:var(--accent-amber)">🔄 确认硬件复位？</div>
+      <div class="modal-body">
+        将向主板发送硬件 RESET 脉冲，等同于按下机箱硬重启键。<br>
+        操作系统将直接中断并立即重新引导，未保存的数据可能丢失。
+      </div>
+      <div class="modal-actions">
+        <button class="modal-btn cancel" onclick="closeResetModal()">取消</button>
+        <button class="modal-btn" style="background:var(--accent-amber);color:#04140a" onclick="confirmReset()">确认复位</button>
       </div>
     </div>
   </div>
@@ -794,6 +826,29 @@
       }
       client.publish(TOPIC_SET, cmd);
       showToast(`已下发: ${label}`);
+    }
+
+
+    function openPowerModal() {
+      document.getElementById('powerModal').classList.add('active');
+    }
+    function closePowerModal() {
+      document.getElementById('powerModal').classList.remove('active');
+    }
+    function confirmPower() {
+      closePowerModal();
+      sendCmd('press', '触发电源按键');
+    }
+
+    function openResetModal() {
+      document.getElementById('resetModal').classList.add('active');
+    }
+    function closeResetModal() {
+      document.getElementById('resetModal').classList.remove('active');
+    }
+    function confirmReset() {
+      closeResetModal();
+      sendCmd('reset', '硬件复位 (Reset)');
     }
 
     function openDangerModal() {
