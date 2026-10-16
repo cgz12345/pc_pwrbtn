@@ -1,13 +1,13 @@
 /*
  * pc_pwrbtn.ino — ESP32-S3 电脑远程开关机/复位/指示灯硬件回读完整版
  * ----------------------------------------------------------------------------
- * 1. 核心控制：
- *    - 电源键 (GPIO 5)：并联机箱 POWER SW，开漏输出（短按 0.5s 开机/关机；长按 6s 强制断电）
- *    - 复位键 (GPIO 6)：并联机箱 RESET SW，开漏输出（脉冲 0.5s 硬重启）
- * 2. 状态真机感知（前面板灯）：
- *    - 电源指示灯 (GPIO 7)：PLED+ 高电平有效（1=开机，0=关机）
- *    - 硬盘指示灯 (GPIO 8)：HDLED- 低电平有效（捕获下降沿=读写活动）
- * 3. 蓝牙无敌配置协议：
+ * 1. 核心控制（连续四个脚）：
+ *    - 电源键 (GPIO 4)：并联机箱 POWER SW，开漏输出（短按 0.5s 开机/关机；长按 4.5s 强制断电，断电自松）
+ *    - 复位键 (GPIO 5)：并联机箱 RESET SW，开漏输出（脉冲 0.5s 硬重启）
+ * 2. 状态真机感知（前面板灯低端控制）：
+ *    - 电源指示灯 (GPIO 6)：单接 PLED- 负极，低电平有效（开机拉低至 0V，关机断开为 3.3V，pledInv=1）
+ *    - 硬盘指示灯 (GPIO 7)：单接 HDLED- 负极，低电平有效（读写拉低至 0V 触发闪烁，关机 0V 自动互锁）
+ * 3. 蓝牙全量无线配置：
  *    - 广播名：pc_pwrbtn (GATT Service UUID: 7a1e0001-9c3b-4f2a-8d5e-1b2c3d4e5f60)
  *    - 全参数均可通过蓝牙配置，彻底解决改引脚、换网络、调反相无需重烧代码的问题
  */
@@ -201,10 +201,11 @@ static int readPcPower() {
 
 static void buildStateJson(char* out, size_t maxLen, const char* lastAct) {
   int pcOn = readPcPower();
+  int diskLit = (cfg.pinHdled != 0 && pcOn == 1 && digitalRead(cfg.pinHdled) == 0) ? 1 : 0;
   uint32_t diskAgo = lastHddActMs ? ((millis() - lastHddActMs) / 1000) : 99999;
   snprintf(out, maxLen,
-    "{\"online\":1,\"pc\":%d,\"disk_act\":%lu,\"disk_ago\":%lu,\"rssi\":%d,\"ip\":\"%s\",\"uptime\":%lu,\"last\":\"%s\"}",
-    pcOn, (unsigned long)hddActCount, (unsigned long)diskAgo,
+    "{\"online\":1,\"pc\":%d,\"disk_lit\":%d,\"disk_act\":%lu,\"disk_ago\":%lu,\"rssi\":%d,\"ip\":\"%s\",\"uptime\":%lu,\"last\":\"%s\"}",
+    pcOn, diskLit, (unsigned long)hddActCount, (unsigned long)diskAgo,
     WiFi.status() == WL_CONNECTED ? (int)WiFi.RSSI() : 0,
     WiFi.status() == WL_CONNECTED ? WiFi.localIP().toString().c_str() : "--",
     (unsigned long)(millis() / 1000), lastAct ? lastAct : "idle");
@@ -445,20 +446,23 @@ static void pollLeds() {
     publishState(currentPwr == 1 ? "pc_on" : "pc_off");
   }
 
-  // 2. 硬盘指示灯 (HDLED- 低有效，抓取下降沿读盘)
+  // 2. 硬盘指示灯 (实时电平镜像：HDLED- 0V 为亮，3.3V 为灭)
   if (cfg.pinHdled != 0) {
-    static int lastHddRaw = 1;
-    int hddRaw = digitalRead(cfg.pinHdled);
-    if (lastHddRaw == 1 && hddRaw == 0) {
-      hddActCount++;
-      lastHddActMs = millis();
-      // 读写频繁时限制 MQTT 广播频率（最多每 250ms 广播一次活动事件）
-      if (millis() - lastHddReportMs > 250) {
-        lastHddReportMs = millis();
-        publishState("hdd_activity");
+    static int lastDiskLit = -1;
+    static uint32_t lastLitReportMs = 0;
+    int pcOn = readPcPower();
+    int currentLit = (pcOn == 1 && digitalRead(cfg.pinHdled) == 0) ? 1 : 0;
+    if (currentLit != lastDiskLit) {
+      if (millis() - lastLitReportMs > 150) {
+        lastLitReportMs = millis();
+        lastDiskLit = currentLit;
+        if (currentLit == 1) {
+          hddActCount++;
+          lastHddActMs = millis();
+        }
+        publishState(currentLit == 1 ? "disk_lit" : "disk_off");
       }
     }
-    lastHddRaw = hddRaw;
   }
 }
 
