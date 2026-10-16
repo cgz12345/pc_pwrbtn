@@ -453,7 +453,7 @@ static void pollLeds() {
     int pcOn = readPcPower();
     int currentLit = (pcOn == 1 && digitalRead(cfg.pinHdled) == 0) ? 1 : 0;
     if (currentLit != lastDiskLit) {
-      if (millis() - lastLitReportMs > 150) {
+      if (millis() - lastLitReportMs > 200) {
         lastLitReportMs = millis();
         lastDiskLit = currentLit;
         if (currentLit == 1) {
