@@ -114,6 +114,7 @@ static uint32_t lastWifiRetryMs = 0;
 static uint32_t rebootScheduleMs = 0;
 
 static int      lastPwrState = -1;
+static uint32_t pcOnSinceMs  = 0;   // 主机开机时刻（millis 基准），0 = 未知/已关机
 static uint32_t hddActCount = 0;
 static uint32_t lastHddActMs = 0;
 static uint32_t lastHddReportMs = 0;
@@ -202,10 +203,11 @@ static int readPcPower() {
 static void buildStateJson(char* out, size_t maxLen, const char* lastAct) {
   int pcOn = readPcPower();
   int diskLit = (cfg.pinHdled != 0 && pcOn == 1 && digitalRead(cfg.pinHdled) == 0) ? 1 : 0;
+  uint32_t pcUp = (pcOn == 1 && pcOnSinceMs > 0) ? ((millis() - pcOnSinceMs) / 1000) : 0;
   uint32_t diskAgo = lastHddActMs ? ((millis() - lastHddActMs) / 1000) : 99999;
   snprintf(out, maxLen,
-    "{\"online\":1,\"pc\":%d,\"disk_lit\":%d,\"disk_act\":%lu,\"disk_ago\":%lu,\"rssi\":%d,\"ip\":\"%s\",\"uptime\":%lu,\"last\":\"%s\"}",
-    pcOn, diskLit, (unsigned long)hddActCount, (unsigned long)diskAgo,
+    "{\"online\":1,\"pc\":%d,\"pc_up\":%lu,\"disk_lit\":%d,\"disk_act\":%lu,\"disk_ago\":%lu,\"rssi\":%d,\"ip\":\"%s\",\"uptime\":%lu,\"last\":\"%s\"}",
+    pcOn, (unsigned long)pcUp, diskLit, (unsigned long)hddActCount, (unsigned long)diskAgo,
     WiFi.status() == WL_CONNECTED ? (int)WiFi.RSSI() : 0,
     WiFi.status() == WL_CONNECTED ? WiFi.localIP().toString().c_str() : "--",
     (unsigned long)(millis() / 1000), lastAct ? lastAct : "idle");
@@ -442,6 +444,8 @@ static void pollLeds() {
   int currentPwr = readPcPower();
   if (currentPwr != lastPwrState) {
     lastPwrState = currentPwr;
+    // 记录主机开机时刻（供 MQTT 上报 pc_up 主机开机时长）
+    pcOnSinceMs = (currentPwr == 1) ? millis() : 0;
     Serial.printf("[LED] 电脑电源状态变为: %s\n", currentPwr == 1 ? "🟢 开机" : (currentPwr == 0 ? "⚪ 关机" : "未接"));
     publishState(currentPwr == 1 ? "pc_on" : "pc_off");
   }
