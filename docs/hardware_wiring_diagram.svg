@@ -1,22 +1,21 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1120 720" width="100%" height="100%" style="background:#0b0f19;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif;">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1140 700" width="100%" height="100%" style="background:#090d16;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif;">
   <defs>
-    <!-- 渐变底色与面板阴影 -->
+    <!-- 背景渐变与磨砂卡片 -->
     <linearGradient id="cardBg" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#151b28"/>
-      <stop offset="100%" stop-color="#0e131f"/>
+      <stop offset="0%" stop-color="#141c2b"/>
+      <stop offset="100%" stop-color="#0d1422"/>
     </linearGradient>
-    <linearGradient id="chipGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+    <linearGradient id="chipBg" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" stop-color="#1e293b"/>
       <stop offset="100%" stop-color="#0f172a"/>
     </linearGradient>
-    <filter id="subtleGlow" x="-20%" y="-20%" width="140%" height="140%">
-      <feGaussianBlur stdDeviation="3" result="blur"/>
-      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
-    </filter>
 
-    <!-- 各种线缆的末端箭头标记 -->
+    <!-- 箭头标记 -->
     <marker id="arr-red" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
       <path d="M 0 1 L 8 5 L 0 9 z" fill="#f43f5e"/>
+    </marker>
+    <marker id="arr-gray" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 8 5 L 0 9 z" fill="#94a3b8"/>
     </marker>
     <marker id="arr-green" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
       <path d="M 0 1 L 8 5 L 0 9 z" fill="#10b981"/>
@@ -30,235 +29,257 @@
     <marker id="arr-purple" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
       <path d="M 0 1 L 8 5 L 0 9 z" fill="#c084fc"/>
     </marker>
-    <marker id="arr-gray" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-      <path d="M 0 1 L 8 5 L 0 9 z" fill="#94a3b8"/>
-    </marker>
   </defs>
 
   <!-- 顶部主标题 -->
-  <text x="560" y="38" text-anchor="middle" fill="#ffffff" font-size="21" font-weight="700" letter-spacing="1.2">ESP32 电脑远程开机与硬件回读 · 实物引脚接线示意图</text>
-  <text x="560" y="62" text-anchor="middle" fill="#94a3b8" font-size="12">主板 USB 9-Pin (1转2) 待机取电 ── 前面板 F_PANEL (9-Pin) 信号传输与真机状态回读</text>
+  <text x="570" y="38" text-anchor="middle" fill="#ffffff" font-size="21" font-weight="700" letter-spacing="1">ESP32 电脑远程开机与硬件状态回读 · 实物引脚接线示意图</text>
+  <text x="570" y="62" text-anchor="middle" fill="#94a3b8" font-size="12">主板 USB 9-Pin (1转2) 待机取电 ── 前面板 F_PANEL (9-Pin) 信号传输 ── 无乱线直连架构</text>
 
-  <!-- ==================== 区域 1：主板 USB 9-Pin 待机供电与 1转2 分线器 ==================== -->
-  <g transform="translate(35, 90)">
-    <rect width="335" height="265" rx="12" fill="url(#cardBg)" stroke="#334155" stroke-width="1.2"/>
-    <rect x="0" y="0" width="335" height="38" rx="12" fill="#1e293b"/>
-    <text x="16" y="24" fill="#38bdf8" font-size="14" font-weight="600">⚡ 1. 待机取电：主板 USB 2.0 (9-Pin)</text>
+  <!-- ==================== 左列：主机主板接口 (Motherboard Headers) ==================== -->
+  
+  <!-- 模块 1：主板 USB 2.0 9-Pin (待机取电) -->
+  <g transform="translate(35, 85)">
+    <rect width="320" height="235" rx="12" fill="url(#cardBg)" stroke="#334155" stroke-width="1.2"/>
+    <rect x="0" y="0" width="320" height="36" rx="12" fill="#1e293b"/>
+    <text x="14" y="23" fill="#38bdf8" font-size="13.5" font-weight="600">⚡ 1. 待机取电：主板 USB 2.0 (9-Pin)</text>
 
-    <!-- 9-pin 排针引脚定义图 (俯视图) -->
-    <g transform="translate(18, 50)">
-      <rect width="135" height="66" rx="6" fill="#0f172a" stroke="#475569" stroke-width="1"/>
-      <text x="67" y="16" text-anchor="middle" fill="#94a3b8" font-size="9.5">主板 USB 9-Pin 原座</text>
-      <!-- 上排 5 针 (奇数排) -->
-      <circle cx="20" cy="30" r="5" fill="#f43f5e"/><text x="20" y="33" text-anchor="middle" fill="#fff" font-size="7">1</text>
-      <circle cx="43" cy="30" r="4" fill="#64748b"/>
-      <circle cx="66" cy="30" r="4" fill="#64748b"/>
-      <circle cx="89" cy="30" r="5" fill="#94a3b8"/><text x="89" y="33" text-anchor="middle" fill="#000" font-size="7">7</text>
-      <circle cx="112" cy="30" r="3" fill="#334155"/>
-      <!-- 下排 4 针 (偶数排，第10针缺失作为防呆Key) -->
-      <circle cx="20" cy="48" r="5" fill="#f43f5e"/><text x="20" y="51" text-anchor="middle" fill="#fff" font-size="7">2</text>
-      <circle cx="43" cy="48" r="4" fill="#64748b"/>
-      <circle cx="66" cy="48" r="4" fill="#64748b"/>
-      <circle cx="89" cy="48" r="5" fill="#94a3b8"/><text x="89" y="51" text-anchor="middle" fill="#000" font-size="7">8</text>
-      <rect x="108" y="44" width="8" height="8" fill="#1e293b" stroke="#334155" stroke-dasharray="1,1"/>
+    <!-- 俯视排针图 -->
+    <g transform="translate(16, 48)">
+      <rect width="125" height="58" rx="6" fill="#0b0f19" stroke="#475569" stroke-width="1"/>
+      <text x="62" y="14" text-anchor="middle" fill="#94a3b8" font-size="9">9-Pin 原生插座</text>
+      <!-- 上排 5 针 -->
+      <circle cx="18" cy="27" r="4.5" fill="#f43f5e"/><text x="18" y="30" text-anchor="middle" fill="#fff" font-size="6.5">1</text>
+      <circle cx="39" cy="27" r="3.5" fill="#475569"/>
+      <circle cx="60" cy="27" r="3.5" fill="#475569"/>
+      <circle cx="81" cy="27" r="4.5" fill="#94a3b8"/><text x="81" y="30" text-anchor="middle" fill="#000" font-size="6.5">7</text>
+      <circle cx="102" cy="27" r="2.5" fill="#334155"/>
+      <!-- 下排 4 针 -->
+      <circle cx="18" cy="44" r="4.5" fill="#f43f5e"/><text x="18" y="47" text-anchor="middle" fill="#fff" font-size="6.5">2</text>
+      <circle cx="39" cy="44" r="3.5" fill="#475569"/>
+      <circle cx="60" cy="44" r="3.5" fill="#475569"/>
+      <circle cx="81" cy="44" r="4.5" fill="#94a3b8"/><text x="81" y="47" text-anchor="middle" fill="#000" font-size="6.5">8</text>
+      <rect x="98" y="40" width="7" height="7" fill="#1e293b" stroke="#334155" stroke-dasharray="1,1"/>
     </g>
 
-    <!-- 1转2 扩展线卡片 -->
-    <g transform="translate(168, 50)">
-      <rect width="150" height="66" rx="6" fill="#1e293b" stroke="#38bdf8" stroke-width="1.2" stroke-dasharray="3,2"/>
-      <text x="75" y="22" text-anchor="middle" fill="#38bdf8" font-size="11" font-weight="700">USB 9-Pin 1转2线</text>
-      <text x="75" y="40" text-anchor="middle" fill="#cbd5e1" font-size="9.5">主板插针 1 口扩展为 2 口</text>
-      <text x="75" y="54" text-anchor="middle" fill="#94a3b8" font-size="9">保留机箱原有前置面板功能</text>
+    <!-- 1分2分线器图解 -->
+    <g transform="translate(150, 48)">
+      <rect width="154" height="58" rx="6" fill="#1e293b" stroke="#38bdf8" stroke-width="1.2" stroke-dasharray="3,2"/>
+      <text x="77" y="20" text-anchor="middle" fill="#38bdf8" font-size="11" font-weight="700">USB 9-Pin 1转2线</text>
+      <text x="77" y="36" text-anchor="middle" fill="#cbd5e1" font-size="9">主板 1 针扩展为 2 口</text>
+      <text x="77" y="49" text-anchor="middle" fill="#94a3b8" font-size="8.5">前置面板口照常全速用</text>
     </g>
 
-    <!-- 1分2 两条支路 -->
-    <path d="M 85 125 L 85 142 L 40 142 L 40 162" fill="none" stroke="#64748b" stroke-width="1.2"/>
-    <rect x="15" y="162" width="140" height="42" rx="6" fill="#0f172a" stroke="#334155" stroke-width="1"/>
-    <text x="85" y="179" text-anchor="middle" fill="#cbd5e1" font-size="10.5" font-weight="500">支路 A: 机箱前面板</text>
-    <text x="85" y="195" text-anchor="middle" fill="#64748b" font-size="9">原装 USB 2.0 照常插用</text>
+    <!-- 引出两路端子卡片 (严格水平对齐右侧 ESP32 供电引脚) -->
+    <!-- 端子 A: +5V 待机电 (y=118+85=203 -> 对应右侧 203) -->
+    <g transform="translate(16, 118)">
+      <rect width="288" height="42" rx="6" fill="#0b0f19" stroke="#f43f5e" stroke-width="1.2"/>
+      <circle cx="14" cy="21" r="5" fill="#f43f5e"/>
+      <text x="26" y="25" fill="#f43f5e" font-size="12" font-weight="700">Pin 1 / 2 (+5V 待机电)</text>
+      <text x="180" y="25" fill="#cbd5e1" font-size="11">分线器 B 口红线 ──►</text>
+    </g>
 
-    <path d="M 242 125 L 242 142 L 242 162" fill="none" stroke="#f43f5e" stroke-width="1.5"/>
-    <rect x="168" y="162" width="150" height="42" rx="6" fill="#0f172a" stroke="#f43f5e" stroke-width="1.2"/>
-    <text x="243" y="179" text-anchor="middle" fill="#f43f5e" font-size="10.5" font-weight="600">支路 B: ESP32 取电</text>
-    <text x="243" y="195" text-anchor="middle" fill="#94a3b8" font-size="9">取 Pin 1(+5V) 与 Pin 7(GND)</text>
+    <!-- 端子 B: GND 地线 (y=168+85=253 -> 对应右侧 253) -->
+    <g transform="translate(16, 168)">
+      <rect width="288" height="42" rx="6" fill="#0b0f19" stroke="#94a3b8" stroke-width="1.2"/>
+      <circle cx="14" cy="21" r="5" fill="#94a3b8"/>
+      <text x="26" y="25" fill="#cbd5e1" font-size="12" font-weight="700">Pin 7 / 8 (GND 公共地)</text>
+      <text x="180" y="25" fill="#94a3b8" font-size="11">分线器 B 口黑线 ──►</text>
+    </g>
 
-    <text x="16" y="228" fill="#e2e8f0" font-size="10.5">📌 <b>取电原理</b>：电脑关机后 USB 保持 +5VSB 待机供电。</text>
-    <text x="16" y="246" fill="#94a3b8" font-size="10">* BIOS 需确保<b>关闭 ErP/EuP</b>，避免关机切断 5VSB 电源轨。</text>
+    <text x="16" y="222" fill="#94a3b8" font-size="9.5">* 主板 BIOS 必须关闭 ErP/EuP，关机后 USB 持续提供 +5VSB。</text>
   </g>
 
-  <!-- ==================== 区域 2：主板前面板 F_PANEL 信号传输 ==================== -->
-  <g transform="translate(35, 375)">
-    <rect width="335" height="315" rx="12" fill="url(#cardBg)" stroke="#334155" stroke-width="1.2"/>
-    <rect x="0" y="0" width="335" height="38" rx="12" fill="#1e293b"/>
-    <text x="16" y="24" fill="#a855f7" font-size="14" font-weight="600">🔌 2. 信号回读：前面板排针 (F_PANEL)</text>
+  <!-- 模块 2：前面板 F_PANEL (9-Pin 信号) -->
+  <g transform="translate(35, 335)">
+    <rect width="320" height="345" rx="12" fill="url(#cardBg)" stroke="#334155" stroke-width="1.2"/>
+    <rect x="0" y="0" width="320" height="36" rx="12" fill="#1e293b"/>
+    <text x="14" y="23" fill="#a855f7" font-size="13.5" font-weight="600">🔌 2. 信号传输：前面板排针 (F_PANEL)</text>
 
-    <!-- F_PANEL 排针定义图 -->
-    <g transform="translate(18, 50)">
-      <rect width="300" height="114" rx="8" fill="#0f172a" stroke="#475569" stroke-width="1"/>
-      <text x="150" y="18" text-anchor="middle" fill="#cbd5e1" font-size="11" font-weight="600">标准 Intel 9-Pin F_PANEL 接口定义</text>
-
-      <!-- 上排 -->
-      <g transform="translate(32, 38)" font-size="9" text-anchor="middle">
-        <circle cx="10" cy="8" r="6" fill="#475569"/><text x="10" y="11" fill="#fff">1</text>
-        <text x="10" y="25" fill="#64748b">HD+</text>
-
-        <circle cx="62" cy="8" r="6" fill="#c084fc"/><text x="62" y="11" fill="#fff">3</text>
-        <text x="62" y="25" fill="#c084fc" font-weight="700">HD-</text>
-
-        <circle cx="120" cy="8" r="6" fill="#f59e0b"/><text x="120" y="11" fill="#fff">5</text>
-        <text x="120" y="25" fill="#f59e0b" font-weight="700">RST</text>
-
-        <circle cx="176" cy="8" r="6" fill="#f59e0b"/><text x="176" y="11" fill="#fff">7</text>
-        <text x="176" y="25" fill="#f59e0b">RST</text>
-
-        <circle cx="230" cy="8" r="5" fill="#334155"/><text x="230" y="25" fill="#64748b">NC</text>
-      </g>
-
-      <!-- 下排 -->
-      <g transform="translate(32, 75)" font-size="9" text-anchor="middle">
-        <circle cx="10" cy="8" r="6" fill="#475569"/><text x="10" y="11" fill="#fff">2</text>
-        <text x="10" y="25" fill="#64748b">PWR+</text>
-
-        <circle cx="62" cy="8" r="6" fill="#38bdf8"/><text x="62" y="11" fill="#fff">4</text>
-        <text x="62" y="25" fill="#38bdf8" font-weight="700">PLED-</text>
-
-        <circle cx="120" cy="8" r="6" fill="#10b981"/><text x="120" y="11" fill="#fff">6</text>
-        <text x="120" y="25" fill="#10b981" font-weight="700">PWR</text>
-
-        <circle cx="176" cy="8" r="6" fill="#10b981"/><text x="176" y="11" fill="#fff">8</text>
-        <text x="176" y="25" fill="#10b981">PWR</text>
-
-        <rect x="226" y="4" width="8" height="8" fill="#1e293b" stroke="#334155" stroke-dasharray="1,1"/>
-        <text x="230" y="25" fill="#64748b">KEY</text>
+    <!-- F_PANEL 排针定义小图 -->
+    <g transform="translate(16, 46)">
+      <rect width="288" height="52" rx="6" fill="#0b0f19" stroke="#475569" stroke-width="1"/>
+      <g transform="translate(18, 14)" font-size="8.5" text-anchor="middle">
+        <!-- 上排 -->
+        <circle cx="10" cy="5" r="4.5" fill="#475569"/><text x="10" y="16" fill="#64748b">HD+</text>
+        <circle cx="58" cy="5" r="5" fill="#c084fc"/><text x="58" y="16" fill="#c084fc" font-weight="700">HD-</text>
+        <circle cx="118" cy="5" r="5" fill="#f59e0b"/><text x="118" y="16" fill="#f59e0b" font-weight="700">RST</text>
+        <circle cx="174" cy="5" r="5" fill="#f59e0b"/><text x="174" y="16" fill="#f59e0b">RST</text>
+        <circle cx="230" cy="5" r="4" fill="#334155"/><text x="230" y="16" fill="#64748b">NC</text>
+        <!-- 下排 -->
+        <circle cx="10" cy="27" r="4.5" fill="#475569"/><text x="10" y="37" fill="#64748b">PWR+</text>
+        <circle cx="58" cy="27" r="5" fill="#38bdf8"/><text x="58" y="37" fill="#38bdf8" font-weight="700">PLED-</text>
+        <circle cx="118" cy="27" r="5" fill="#10b981"/><text x="118" y="37" fill="#10b981" font-weight="700">PWR</text>
+        <circle cx="174" cy="27" r="5" fill="#10b981"/><text x="174" y="37" fill="#10b981">PWR</text>
+        <rect x="226" y="23" width="7" height="7" fill="#1e293b" stroke="#334155"/>
       </g>
     </g>
 
-    <!-- 接线操作要点 -->
-    <g transform="translate(18, 175)" font-size="11" fill="#cbd5e1">
-      <rect width="300" height="125" rx="6" fill="#0f172a" stroke="#334155" stroke-width="1"/>
-      <text x="12" y="20" fill="#10b981" font-weight="600">✔ 无损背插并联：</text>
-      <text x="12" y="38" fill="#94a3b8" font-size="10">原机箱前面板插头保持插在主板排针上不动；</text>
-      <text x="12" y="54" fill="#94a3b8" font-size="10">剥出镀锡杜邦线铜芯，插入插头背面金属弹片缝隙缠紧。</text>
+    <!-- 四个信号端子 (水平 Y 坐标严格对齐中间 ESP32 的 4 个 GPIO) -->
+    <!-- 1. POWER_SW (y=108+335=443) -->
+    <g transform="translate(16, 108)">
+      <rect width="288" height="42" rx="6" fill="#0b0f19" stroke="#10b981" stroke-width="1.2"/>
+      <circle cx="14" cy="21" r="5" fill="#10b981"/>
+      <text x="26" y="25" fill="#10b981" font-size="12" font-weight="700">POWER_SW (Pin 6/8)</text>
+      <text x="180" y="25" fill="#6ee7b7" font-size="11">◄── 脉冲开关机</text>
+    </g>
 
-      <text x="12" y="76" fill="#38bdf8" font-weight="600">✔ 关键：为什么必须接负极（-）而非正极（+）？</text>
-      <text x="12" y="94" fill="#94a3b8" font-size="10">主板 PLED+ 在关机时仍供 3.3V 待机电（接+必误判开机）；</text>
-      <text x="12" y="110" fill="#94a3b8" font-size="10">主板通过南桥下拉负极（0V开机/3.3V关机），故必须接负极！</text>
+    <!-- 2. RESET_SW (y=156+335=491) -->
+    <g transform="translate(16, 156)">
+      <rect width="288" height="42" rx="6" fill="#0b0f19" stroke="#f59e0b" stroke-width="1.2"/>
+      <circle cx="14" cy="21" r="5" fill="#f59e0b"/>
+      <text x="26" y="25" fill="#f59e0b" font-size="12" font-weight="700">RESET_SW (Pin 5/7)</text>
+      <text x="180" y="25" fill="#fcd34d" font-size="11">◄── 脉冲硬重启</text>
+    </g>
+
+    <!-- 3. PLED- (y=204+335=539) -->
+    <g transform="translate(16, 204)">
+      <rect width="288" height="42" rx="6" fill="#0b0f19" stroke="#38bdf8" stroke-width="1.2"/>
+      <circle cx="14" cy="21" r="5" fill="#38bdf8"/>
+      <text x="26" y="25" fill="#38bdf8" font-size="12" font-weight="700">PLED- (Pin 4 负极)</text>
+      <text x="180" y="25" fill="#7dd3fc" font-size="11">低端电平回读 ──►</text>
+    </g>
+
+    <!-- 4. HDLED- (y=252+335=587) -->
+    <g transform="translate(16, 252)">
+      <rect width="288" height="42" rx="6" fill="#0b0f19" stroke="#c084fc" stroke-width="1.2"/>
+      <circle cx="14" cy="21" r="5" fill="#c084fc"/>
+      <text x="26" y="25" fill="#c084fc" font-size="12" font-weight="700">HDLED- (Pin 3 负极)</text>
+      <text x="180" y="25" fill="#d8b4fe" font-size="11">低端电平回读 ──►</text>
+    </g>
+
+    <text x="16" y="312" fill="#10b981" font-size="10" font-weight="600">✔ 无损并联：原机箱线插在主板上，杜邦线铜芯插插头背面金属片缝隙。</text>
+    <text x="16" y="328" fill="#38bdf8" font-size="9.5">✔ 绝不能接正极(+)：主板关机 PLED+ 仍有 3.3V，接负极(0V)才能精准识别开机！</text>
+  </g>
+
+  <!-- ==================== 中列：ESP32 核心控制器 (ESP32-S3 / C3) ==================== -->
+  <g transform="translate(485, 85)">
+    <rect width="270" height="595" rx="14" fill="url(#chipBg)" stroke="#10b981" stroke-width="1.8"/>
+    <rect x="0" y="0" width="270" height="40" rx="14" fill="#10b981" fill-opacity="0.15"/>
+    <text x="135" y="25" text-anchor="middle" fill="#34d399" font-size="15" font-weight="700">⚡ ESP32-S3 / C3 核心</text>
+
+    <!-- 开漏保护特性说明 -->
+    <rect x="14" y="48" width="242" height="52" rx="6" fill="#0b0f19" stroke="#059669" stroke-width="1"/>
+    <text x="24" y="68" fill="#10b981" font-size="11" font-weight="700">🛡️ 硬件开漏保护 (Open-Drain)</text>
+    <text x="24" y="86" fill="#94a3b8" font-size="9.5">平时高阻浮空不灌电；触发仅下拉接地，原机箱按键正常。</text>
+
+    <!-- 6 个端口定义卡片 (与左侧完美水平同高) -->
+    <!-- 1. VIN / 5V (对齐 y=203 -> 卡片内部相对 y=118) -->
+    <g transform="translate(14, 118)">
+      <rect width="242" height="42" rx="6" fill="#0b0f19" stroke="#f43f5e" stroke-width="1.2"/>
+      <circle cx="16" cy="21" r="5" fill="#f43f5e"/>
+      <text x="28" y="25" fill="#f43f5e" font-size="12" font-weight="700">VIN / 5V 供电</text>
+      <text x="130" y="25" fill="#cbd5e1" font-size="10.5">◄── 接 +5VSB 待机电</text>
+    </g>
+
+    <!-- 2. GND (对齐 y=253 -> 卡片内部相对 y=168) -->
+    <g transform="translate(14, 168)">
+      <rect width="242" height="42" rx="6" fill="#0b0f19" stroke="#94a3b8" stroke-width="1.2"/>
+      <circle cx="16" cy="21" r="5" fill="#94a3b8"/>
+      <text x="28" y="25" fill="#cbd5e1" font-size="12" font-weight="700">GND 地线</text>
+      <text x="130" y="25" fill="#94a3b8" font-size="10.5">◄── 与主板天然共地</text>
+    </g>
+
+    <!-- 3. GPIO 4 (对齐 y=443 -> 卡片内部相对 y=358) -->
+    <g transform="translate(14, 358)">
+      <rect width="242" height="42" rx="6" fill="#0b0f19" stroke="#10b981" stroke-width="1.2"/>
+      <circle cx="16" cy="21" r="5" fill="#10b981"/>
+      <text x="28" y="25" fill="#10b981" font-size="12" font-weight="700">GPIO 4</text>
+      <text x="85" y="25" fill="#6ee7b7" font-size="10.5">──► POWER_SW 开漏</text>
+    </g>
+
+    <!-- 4. GPIO 5 (对齐 y=491 -> 卡片内部相对 y=406) -->
+    <g transform="translate(14, 406)">
+      <rect width="242" height="42" rx="6" fill="#0b0f19" stroke="#f59e0b" stroke-width="1.2"/>
+      <circle cx="16" cy="21" r="5" fill="#f59e0b"/>
+      <text x="28" y="25" fill="#f59e0b" font-size="12" font-weight="700">GPIO 5</text>
+      <text x="85" y="25" fill="#fcd34d" font-size="10.5">──► RESET_SW 开漏</text>
+    </g>
+
+    <!-- 5. GPIO 6 (对齐 y=539 -> 卡片内部相对 y=454) -->
+    <g transform="translate(14, 454)">
+      <rect width="242" height="42" rx="6" fill="#0b0f19" stroke="#38bdf8" stroke-width="1.2"/>
+      <circle cx="16" cy="21" r="5" fill="#38bdf8"/>
+      <text x="28" y="25" fill="#38bdf8" font-size="12" font-weight="700">GPIO 6</text>
+      <text x="85" y="25" fill="#7dd3fc" font-size="10.5">◄── 弱上拉接 PLED-</text>
+    </g>
+
+    <!-- 6. GPIO 7 (对齐 y=587 -> 卡片内部相对 y=502) -->
+    <g transform="translate(14, 502)">
+      <rect width="242" height="42" rx="6" fill="#0b0f19" stroke="#c084fc" stroke-width="1.2"/>
+      <circle cx="16" cy="21" r="5" fill="#c084fc"/>
+      <text x="28" y="25" fill="#c084fc" font-size="12" font-weight="700">GPIO 7</text>
+      <text x="85" y="25" fill="#d8b4fe" font-size="10.5">◄── 弱上拉接 HDLED-</text>
+    </g>
+
+    <!-- 蓝牙无线配置卡片 -->
+    <g transform="translate(14, 555)">
+      <rect width="242" height="30" rx="6" fill="#0b0f19" stroke="#38bdf8" stroke-width="0.8" stroke-dasharray="3,2"/>
+      <text x="121" y="19" text-anchor="middle" fill="#38bdf8" font-size="10.5" font-weight="500">📶 板载蓝牙 BLE 全量无线治理 (免重烧)</text>
     </g>
   </g>
 
-  <!-- ==================== 区域 3：ESP32 核心控制器 ==================== -->
-  <g transform="translate(440, 130)">
-    <rect width="250" height="505" rx="16" fill="url(#chipGrad)" stroke="#10b981" stroke-width="1.8" filter="url(#subtleGlow)"/>
-    <rect x="0" y="0" width="250" height="46" rx="16" fill="#10b981" fill-opacity="0.15"/>
-    <text x="125" y="28" text-anchor="middle" fill="#34d399" font-size="15" font-weight="700">⚡ ESP32-S3 / C3 核心</text>
+  <!-- ==================== 右列：云端与手机终端 (Cloud & Clients) ==================== -->
+  <g transform="translate(805, 85)">
+    <rect width="300" height="595" rx="12" fill="url(#cardBg)" stroke="#334155" stroke-width="1.2"/>
+    <rect x="0" y="0" width="300" height="36" rx="12" fill="#1e293b"/>
+    <text x="14" y="23" fill="#a78bfa" font-size="13.5" font-weight="600">☁️ 3. 极速云端通信与手机控制</text>
 
-    <!-- 开漏保护徽章 -->
-    <rect x="15" y="58" width="220" height="66" rx="8" fill="#0b0f19" stroke="#059669" stroke-width="1"/>
-    <text x="25" y="78" fill="#10b981" font-size="11" font-weight="700">🛡️ 硬件开漏保护 (Open-Drain)</text>
-    <text x="25" y="96" fill="#94a3b8" font-size="10">平时高阻浮空，不向主板倒灌电流；</text>
-    <text x="25" y="112" fill="#94a3b8" font-size="10">触发时仅下拉接地，原机箱按键完全正常。</text>
-
-    <!-- 引脚连接卡片 -->
-    <g transform="translate(15, 138)" font-size="12">
-      <!-- 5V 供电 -->
-      <rect x="0" y="0" width="220" height="38" rx="6" fill="#1e293b" stroke="#f43f5e" stroke-width="1.2"/>
-      <circle cx="16" cy="19" r="5" fill="#f43f5e"/>
-      <text x="28" y="23" fill="#f43f5e" font-weight="700">5V / VIN</text>
-      <text x="95" y="23" fill="#cbd5e1" font-size="11">← 来自 USB 9Pin (+5VSB)</text>
-
-      <!-- GND 地线 -->
-      <rect x="0" y="46" width="220" height="38" rx="6" fill="#1e293b" stroke="#94a3b8" stroke-width="1"/>
-      <circle cx="16" cy="65" r="5" fill="#94a3b8"/>
-      <text x="28" y="69" fill="#cbd5e1" font-weight="700">GND</text>
-      <text x="95" y="69" fill="#94a3b8" font-size="11">← 与主板天然共地</text>
-
-      <!-- GPIO 4 (开漏控制电源) -->
-      <rect x="0" y="98" width="220" height="38" rx="6" fill="#1e293b" stroke="#10b981" stroke-width="1.2"/>
-      <circle cx="16" cy="117" r="5" fill="#10b981"/>
-      <text x="28" y="121" fill="#10b981" font-weight="700">GPIO 4</text>
-      <text x="90" y="121" fill="#6ee7b7" font-size="10.5">→ 并联 POWER_SW (开关)</text>
-
-      <!-- GPIO 5 (开漏控制复位) -->
-      <rect x="0" y="144" width="220" height="38" rx="6" fill="#1e293b" stroke="#f59e0b" stroke-width="1.2"/>
-      <circle cx="16" cy="163" r="5" fill="#f59e0b"/>
-      <text x="28" y="167" fill="#f59e0b" font-weight="700">GPIO 5</text>
-      <text x="90" y="167" fill="#fcd34d" font-size="10.5">→ 并联 RESET_SW (复位)</text>
-
-      <!-- GPIO 6 (检测电源灯) -->
-      <rect x="0" y="190" width="220" height="38" rx="6" fill="#1e293b" stroke="#38bdf8" stroke-width="1.2"/>
-      <circle cx="16" cy="209" r="5" fill="#38bdf8"/>
-      <text x="28" y="213" fill="#38bdf8" font-weight="700">GPIO 6</text>
-      <text x="90" y="213" fill="#7dd3fc" font-size="10.5">← 弱上拉接 PLED- (开机)</text>
-
-      <!-- GPIO 7 (检测硬盘灯) -->
-      <rect x="0" y="236" width="220" height="38" rx="6" fill="#1e293b" stroke="#c084fc" stroke-width="1.2"/>
-      <circle cx="16" cy="255" r="5" fill="#c084fc"/>
-      <text x="28" y="259" fill="#c084fc" font-weight="700">GPIO 7</text>
-      <text x="90" y="259" fill="#d8b4fe" font-size="10.5">← 弱上拉接 HDLED- (硬盘)</text>
-    </g>
-
-    <!-- 蓝牙天线卡 -->
-    <rect x="15" y="445" width="220" height="42" rx="8" fill="#0b0f19" stroke="#38bdf8" stroke-width="1" stroke-dasharray="3,2"/>
-    <text x="125" y="471" text-anchor="middle" fill="#38bdf8" font-size="11.5" font-weight="600">📶 板载蓝牙 BLE 全量无线治理</text>
-  </g>
-
-  <!-- ==================== 区域 4：云端与手机终端 ==================== -->
-  <g transform="translate(760, 90)">
-    <rect width="325" height="600" rx="12" fill="url(#cardBg)" stroke="#334155" stroke-width="1.2"/>
-    <rect x="0" y="0" width="325" height="38" rx="12" fill="#1e293b"/>
-    <text x="16" y="24" fill="#a78bfa" font-size="14" font-weight="600">☁️ 3. 极速云端通信与手机控制</text>
-
-    <!-- MQTT Broker 卡片 -->
-    <g transform="translate(16, 52)">
-      <rect width="293" height="110" rx="8" fill="#0f172a" stroke="#8b5cf6" stroke-width="1.2"/>
+    <!-- EMQX 集群 -->
+    <g transform="translate(15, 50)">
+      <rect width="270" height="110" rx="8" fill="#0b0f19" stroke="#8b5cf6" stroke-width="1.2"/>
       <text x="14" y="26" fill="#c4b5fd" font-size="13" font-weight="700">EMQX 国内高可用极速节点</text>
-      <text x="14" y="48" fill="#e2e8f0" font-size="11">broker-cn.emqx.io (8883 TLS / 8084 WSS)</text>
+      <text x="14" y="48" fill="#cbd5e1" font-size="11">broker-cn.emqx.io (8883/8084)</text>
       <text x="14" y="72" fill="#34d399" font-size="11.5" font-weight="600">⚡ 国内直连 15ms 握手，无感低延迟</text>
-      <text x="14" y="94" fill="#94a3b8" font-size="10">专属 Topic 隔离控制：命令与状态双向互锁</text>
+      <text x="14" y="94" fill="#94a3b8" font-size="10">主题隔离控制：支持专属安全指令通道</text>
     </g>
 
-    <!-- 手机 Web App 卡片 -->
-    <g transform="translate(16, 178)">
-      <rect width="293" height="235" rx="8" fill="#0f172a" stroke="#10b981" stroke-width="1.2"/>
-      <text x="14" y="26" fill="#6ee7b7" font-size="13" font-weight="700">📱 手机独立 Web App 控制台 (PWA)</text>
-      <text x="14" y="50" fill="#cbd5e1" font-size="11.5">• <b>沉浸式深色玻璃拟态</b>，支持加到手机主屏</text>
-      <text x="14" y="76" fill="#cbd5e1" font-size="11.5">• <b>真机电源大光环</b>：开机绿环呼吸，关机灰环</text>
-      <text x="14" y="102" fill="#cbd5e1" font-size="11.5">• <b>硬盘电平镜像</b>：物理灯亮黄灯点亮，关机互锁</text>
-      <text x="14" y="128" fill="#cbd5e1" font-size="11.5">• <b>三重安全确认</b>：关机/强关/重启均防误触</text>
-      <text x="14" y="154" fill="#cbd5e1" font-size="11.5">• <b>4.5s 智能强关</b>：断电自动松开防二次开机</text>
-      <text x="14" y="180" fill="#38bdf8" font-size="11">• <b>内置蓝牙抽屉</b>：扫码配置引脚与网络</text>
-      <rect x="14" y="198" width="265" height="24" rx="4" fill="#1e293b"/>
-      <text x="146" y="214" text-anchor="middle" fill="#94a3b8" font-size="10">本地桌面已有单文件，微信传输或手机扫码即用</text>
+    <!-- 手机 Web App -->
+    <g transform="translate(15, 175)">
+      <rect width="270" height="235" rx="8" fill="#0b0f19" stroke="#10b981" stroke-width="1.2"/>
+      <text x="14" y="26" fill="#6ee7b7" font-size="13" font-weight="700">📱 手机独立 Web App 控制台</text>
+      <text x="14" y="50" fill="#cbd5e1" font-size="11">• <b>沉浸式深色玻璃拟态</b>，支持加到主屏幕</text>
+      <text x="14" y="76" fill="#cbd5e1" font-size="11">• <b>真机状态呼吸光环</b>：开机绿环，关机灰环</text>
+      <text x="14" y="102" fill="#cbd5e1" font-size="11">• <b>硬盘指示灯</b>：读写脉冲闪烁 200ms</text>
+      <text x="14" y="128" fill="#cbd5e1" font-size="11">• <b>平滑时间滚动</b>：显示\"刚刚\"、\"X秒前\"</text>
+      <text x="14" y="154" fill="#cbd5e1" font-size="11">• <b>三重防误触</b>：开关机/强关/重启二次确认</text>
+      <text x="14" y="180" fill="#38bdf8" font-size="11">• <b>4.5s 智能强关</b>：断电自松防二次开机</text>
+      <rect x="14" y="198" width="242" height="24" rx="4" fill="#1e293b"/>
+      <text x="135" y="214" text-anchor="middle" fill="#94a3b8" font-size="10">本地桌面单文件，手机扫码或传微信即用</text>
     </g>
 
-    <!-- 手机蓝牙配网卡片 -->
-    <g transform="translate(16, 430)">
-      <rect width="293" height="150" rx="8" fill="#0f172a" stroke="#38bdf8" stroke-width="1"/>
-      <text x="14" y="24" fill="#38bdf8" font-size="12.5" font-weight="700">📲 手机近场蓝牙配置 (免重新烧录)</text>
-      <text x="14" y="46" fill="#94a3b8" font-size="10.5">使用 LightBlue / nRF Connect 搜索 <b>pc_pwrbtn</b></text>
-      <text x="14" y="66" fill="#cbd5e1" font-size="11">向配置特征写入 JSON 参数（安全口令 831742）：</text>
-      <rect x="14" y="78" width="265" height="34" rx="4" fill="#020617" stroke="#334155" stroke-width="0.8"/>
-      <text x="20" y="99" fill="#fcd34d" font-family="monospace" font-size="9.5">{"pin":"831742","pwr":4,"rst":5,"pled":6,"hdled":7}</text>
-      <text x="14" y="132" fill="#94a3b8" font-size="10">写入后 3 秒自动重启生效，彻底无需重新插线烧录</text>
+    <!-- 蓝牙 App -->
+    <g transform="translate(15, 425)">
+      <rect width="270" height="150" rx="8" fill="#0b0f19" stroke="#38bdf8" stroke-width="1"/>
+      <text x="14" y="24" fill="#38bdf8" font-size="12" font-weight="700">📲 手机近场蓝牙配置 (免重烧)</text>
+      <text x="14" y="44" fill="#94a3b8" font-size="10">搜索蓝牙设备 <b>pc_pwrbtn</b> (PIN: 831742)</text>
+      <text x="14" y="64" fill="#cbd5e1" font-size="10.5">向配置特征写入 JSON 参数即可生效：</text>
+      <rect x="14" y="76" width="242" height="34" rx="4" fill="#020617" stroke="#334155" stroke-width="0.8"/>
+      <text x="20" y="97" fill="#fcd34d" font-family="monospace" font-size="9">{"pin":"831742","pwr":4,"rst":5,"pled":6,"hdled":7}</text>
+      <text x="14" y="130" fill="#94a3b8" font-size="10">写入后 3 秒自动重启生效，无需二次插线</text>
     </g>
   </g>
 
-  <!-- ==================== 连线 (实物走向) ==================== -->
-  <!-- 5V 供电线 (红) -->
-  <path d="M 318 272 L 380 272 L 380 252 L 440 252" fill="none" stroke="#f43f5e" stroke-width="2" marker-end="url(#arr-red)"/>
-  <!-- 地线 GND (灰) -->
-  <path d="M 318 292 L 392 292 L 392 298 L 440 298" fill="none" stroke="#94a3b8" stroke-width="1.8" marker-end="url(#arr-gray)"/>
+  <!-- ==================== 核心连线：纯水平通道，零交叉、零缠绕 ==================== -->
 
-  <!-- GPIO 4 -> PWR (绿) -->
-  <path d="M 440 350 L 390 350 L 390 535 L 210 535" fill="none" stroke="#10b981" stroke-width="2" marker-end="url(#arr-green)"/>
-  <!-- GPIO 5 -> RST (橙) -->
-  <path d="M 440 396 L 400 396 L 400 498 L 210 498" fill="none" stroke="#f59e0b" stroke-width="1.8" marker-end="url(#arr-amber)"/>
-  <!-- PLED- -> GPIO 6 (蓝) -->
-  <path d="M 115 535 L 115 478 L 410 478 L 410 442 L 440 442" fill="none" stroke="#38bdf8" stroke-width="2" marker-end="url(#arr-blue)"/>
-  <!-- HDLED- -> GPIO 7 (紫) -->
-  <path d="M 115 498 L 115 466 L 420 466 L 420 488 L 440 488" fill="none" stroke="#c084fc" stroke-width="1.8" marker-end="url(#arr-purple)"/>
+  <!-- 线 1：+5V 供电线 (红，水平直连 y=224) -->
+  <path d="M 355 224 L 479 224" fill="none" stroke="#f43f5e" stroke-width="2.5" marker-end="url(#arr-red)"/>
 
-  <!-- ESP32 <-> 云端 双向通信 -->
-  <path d="M 690 240 L 760 240" fill="none" stroke="#34d399" stroke-width="2.5" stroke-dasharray="5,3" marker-end="url(#arr-green)"/>
-  <path d="M 760 262 L 690 262" fill="none" stroke="#38bdf8" stroke-width="2" stroke-dasharray="5,3" marker-end="url(#arr-blue)"/>
+  <!-- 线 2：GND 地线 (灰，水平直连 y=274) -->
+  <path d="M 355 274 L 479 274" fill="none" stroke="#94a3b8" stroke-width="2" marker-end="url(#arr-gray)"/>
+
+  <!-- 线 3：POWER_SW 触发线 (绿，水平直连 y=464，方向指向主板) -->
+  <path d="M 485 464 L 361 464" fill="none" stroke="#10b981" stroke-width="2.5" marker-end="url(#arr-green)"/>
+
+  <!-- 线 4：RESET_SW 复位线 (橙，水平直连 y=512，方向指向主板) -->
+  <path d="M 485 512 L 361 512" fill="none" stroke="#f59e0b" stroke-width="2.2" marker-end="url(#arr-amber)"/>
+
+  <!-- 线 5：PLED- 电源灯回读线 (蓝，水平直连 y=560，方向指向单片机) -->
+  <path d="M 355 560 L 479 560" fill="none" stroke="#38bdf8" stroke-width="2.5" marker-end="url(#arr-blue)"/>
+
+  <!-- 线 6：HDLED- 硬盘灯回读线 (紫，水平直连 y=608，方向指向单片机) -->
+  <path d="M 355 608 L 479 608" fill="none" stroke="#c084fc" stroke-width="2.2" marker-end="url(#arr-purple)"/>
+
+  <!-- ESP32 与云端通信 (双向箭头) -->
+  <path d="M 755 235 L 800 235" fill="none" stroke="#34d399" stroke-width="2.5" stroke-dasharray="4,2" marker-end="url(#arr-green)"/>
+  <path d="M 805 255 L 760 255" fill="none" stroke="#38bdf8" stroke-width="2.5" stroke-dasharray="4,2" marker-end="url(#arr-blue)"/>
 </svg>
