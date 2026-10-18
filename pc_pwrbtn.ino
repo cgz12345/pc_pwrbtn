@@ -177,20 +177,26 @@ static void resetConfigDefault() {
 }
 
 // ---------- 硬件引脚控制 ----------
-static void setupOpenDrain(uint8_t pin) {
+// 待机态：纯高阻输入，连内部上拉/下拉都关闭 —— 对主板按键线路"零负载、零影响"
+static void setupPassivePin(uint8_t pin) {
   if (pin == 0) return;
   gpio_reset_pin((gpio_num_t)pin);
-  gpio_set_level((gpio_num_t)pin, 1);
-  gpio_set_direction((gpio_num_t)pin, GPIO_MODE_INPUT_OUTPUT_OD);
+  gpio_set_pull_mode((gpio_num_t)pin, GPIO_FLOATING);
+  gpio_set_direction((gpio_num_t)pin, GPIO_MODE_INPUT);
 }
 
+// 触发脉冲：仅在这一瞬间切为开漏输出拉低，脉冲结束后立即恢复纯高阻（绝不停留在输出态）
 static void triggerPulse(uint8_t pin, uint32_t ms, const char* name) {
   if (pin == 0) return;
   Serial.printf("[ACTION] 触发: %s (%ums)\n", name, ms);
+  gpio_set_direction((gpio_num_t)pin, GPIO_MODE_INPUT_OUTPUT_OD);
+  gpio_set_pull_mode((gpio_num_t)pin, GPIO_FLOATING);
   gpio_set_level((gpio_num_t)pin, 0);
   delay(ms);
   gpio_set_level((gpio_num_t)pin, 1);
-  delay(50);
+  delay(20);
+  gpio_set_direction((gpio_num_t)pin, GPIO_MODE_INPUT);
+  gpio_set_pull_mode((gpio_num_t)pin, GPIO_FLOATING);
 }
 
 // ---------- 状态读取 ----------
@@ -477,8 +483,8 @@ void setup() {
   loadConfig();
 
   // 硬件开漏初始化
-  setupOpenDrain(cfg.pinPwr);
-  setupOpenDrain(cfg.pinRst);
+  setupPassivePin(cfg.pinPwr);
+  setupPassivePin(cfg.pinRst);
 
   // 指示灯引脚配置：PLED 启用内部弱下拉（防止未插线时悬空浮动误判为开机）
   // PLED- 负极模式：启用内部弱上拉，开机接地为 0V，关机浮高为 3.3V
