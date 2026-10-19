@@ -76,6 +76,10 @@
 #define MS_FORCE        4500
 #define MS_RESET        500
 
+// 硬盘灯上报最小间隔（毫秒）：越小越跟手，越大越省流量。
+// 500 = 每秒最多 2 条（能看清读写变化）；嫌费流量可改 1000。
+#define DISK_REPORT_MS  500
+
 #define BLE_SVC_UUID    "7a1e0001-9c3b-4f2a-8d5e-1b2c3d4e5f60"
 #define BLE_CH_CFG      "7a1e0002-9c3b-4f2a-8d5e-1b2c3d4e5f60" // 读写配置 JSON
 #define BLE_CH_STAT     "7a1e0003-9c3b-4f2a-8d5e-1b2c3d4e5f60" // 状态实时通知
@@ -472,25 +476,23 @@ static void pollLeds() {
     publishState(currentPwr == 1 ? "pc_on" : "pc_off");
   }
 
-  // 2. 硬盘指示灯（活动窗口镜像：机箱灯 1.2 秒内亮过 = 硬盘正在读写）
-  //    高频闪烁肉眼看上去就是"亮着"，所以按窗口判定并与机箱观感同步；
-  //    连续 1.2 秒完全没亮过才算空闲熄灭。上报限频 900ms，防 TLS 洪泛被云端限流。
+  // 2. 硬盘指示灯（实时变化上报：电平一变就推，最快每 DISK_REPORT_MS 一条）
+  //    网页黄灯直接跟随机箱灯的真实通断节奏闪烁，能看清读写变化；
+  //    限频仅为防止 TLS 报文洪泛被云端限流。
   if (cfg.pinHdled != 0) {
-    static int lastDiskBusy = -1;
-    static uint32_t lastLitSeenMs = 0;
+    static int lastDiskLit = -1;
     static uint32_t lastLitReportMs = 0;
     uint32_t nowMs = millis();
     int pcOn = readPcPower();
-    if (pcOn == 1 && digitalRead(cfg.pinHdled) == 0) lastLitSeenMs = nowMs;
-    int busy = (pcOn == 1 && lastLitSeenMs != 0 && (nowMs - lastLitSeenMs) < 1200) ? 1 : 0;
-    if (busy != lastDiskBusy && (nowMs - lastLitReportMs) >= 900) {
+    int currentLit = (pcOn == 1 && digitalRead(cfg.pinHdled) == 0) ? 1 : 0;
+    if (currentLit != lastDiskLit && (nowMs - lastLitReportMs) >= DISK_REPORT_MS) {
       lastLitReportMs = nowMs;
-      lastDiskBusy = busy;
-      if (busy == 1) {
+      lastDiskLit = currentLit;
+      if (currentLit == 1) {
         hddActCount++;
         lastHddActMs = nowMs;
       }
-      publishState(busy == 1 ? "disk_lit" : "disk_off");
+      publishState(currentLit == 1 ? "disk_lit" : "disk_off");
     }
   }
 }
