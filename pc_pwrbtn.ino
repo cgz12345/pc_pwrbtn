@@ -472,24 +472,25 @@ static void pollLeds() {
     publishState(currentPwr == 1 ? "pc_on" : "pc_off");
   }
 
-  // 2. 硬盘指示灯 (实时电平镜像：HDLED- 0V 为亮，3.3V 为灭)
+  // 2. 硬盘指示灯（活动窗口镜像：机箱灯 1.2 秒内亮过 = 硬盘正在读写）
+  //    高频闪烁肉眼看上去就是"亮着"，所以按窗口判定并与机箱观感同步；
+  //    连续 1.2 秒完全没亮过才算空闲熄灭。上报限频 900ms，防 TLS 洪泛被云端限流。
   if (cfg.pinHdled != 0) {
-    static int lastDiskLit = -1;
+    static int lastDiskBusy = -1;
+    static uint32_t lastLitSeenMs = 0;
     static uint32_t lastLitReportMs = 0;
+    uint32_t nowMs = millis();
     int pcOn = readPcPower();
-    int currentLit = (pcOn == 1 && digitalRead(cfg.pinHdled) == 0) ? 1 : 0;
-    if (currentLit != lastDiskLit) {
-      // 限频 1s：硬盘灯高频抖动时也最多每秒上报一次，
-      // 防止 TLS 报文洪泛触发 EMQX 公共服务器限流/断连
-      if (millis() - lastLitReportMs > 1000) {
-        lastLitReportMs = millis();
-        lastDiskLit = currentLit;
-        if (currentLit == 1) {
-          hddActCount++;
-          lastHddActMs = millis();
-        }
-        publishState(currentLit == 1 ? "disk_lit" : "disk_off");
+    if (pcOn == 1 && digitalRead(cfg.pinHdled) == 0) lastLitSeenMs = nowMs;
+    int busy = (pcOn == 1 && lastLitSeenMs != 0 && (nowMs - lastLitSeenMs) < 1200) ? 1 : 0;
+    if (busy != lastDiskBusy && (nowMs - lastLitReportMs) >= 900) {
+      lastLitReportMs = nowMs;
+      lastDiskBusy = busy;
+      if (busy == 1) {
+        hddActCount++;
+        lastHddActMs = nowMs;
       }
+      publishState(busy == 1 ? "disk_lit" : "disk_off");
     }
   }
 }
