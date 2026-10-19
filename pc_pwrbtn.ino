@@ -112,6 +112,7 @@ static String            bleRxBuffer = "";
 static uint32_t lastHeartbeatMs = 0;
 static uint32_t lastWifiRetryMs = 0;
 static uint32_t rebootScheduleMs = 0;
+static uint32_t lastMqttOkMs = 0;   // 最近一次确认 MQTT 在线的时刻（看门狗基准）
 
 static int      lastPwrState = -1;
 static uint32_t pcOnSinceMs  = 0;   // 主机开机时刻（millis 基准），0 = 未知/已关机
@@ -269,14 +270,23 @@ static void onMqttMessage(char* topic, byte* payload, unsigned int length) {
 }
 
 static void connectWiFi() {
-  Serial.printf("[WiFi] 正在连接网络 %s (用户: %s)...\n", cfg.ssid, cfg.user);
   WiFi.disconnect(true);
   WiFi.mode(WIFI_STA);
   WiFi.setSleep(false);
+
+  // 三种网络自动适配（改网络只需蓝牙写配置，不用重烧）：
+  //  ① 填了账号       → 校园网等 WPA2-企业认证 (PEAP/MSCHAPv2)
+  //  ② 只有密码       → 家庭路由器 / 手机热点的普通 WPA2-个人 (PSK)
+  //  ③ 账号密码都为空 → 开放网络（无密码）
   if (strlen(cfg.user) > 0) {
+    Serial.printf("[WiFi] 企业认证(PEAP) 正在连接 %s (账号: %s)...\n", cfg.ssid, cfg.user);
     WiFi.begin(cfg.ssid, WPA2_AUTH_PEAP, "", cfg.user, cfg.pass);
-  } else {
+  } else if (strlen(cfg.pass) > 0) {
+    Serial.printf("[WiFi] WPA2-个人 正在连接 %s ...\n", cfg.ssid);
     WiFi.begin(cfg.ssid, cfg.pass);
+  } else {
+    Serial.printf("[WiFi] 开放网络 正在连接 %s ...\n", cfg.ssid);
+    WiFi.begin(cfg.ssid);
   }
 }
 
@@ -294,6 +304,9 @@ static void ensureConnections() {
     if (millis() - lastRetry < 5000) return;
     lastRetry = millis();
 
+    netClient.stop();   // 释放可能悬挂的旧 TLS 连接（否则重连会一直失败卡死）
+    delay(20);
+
     Serial.printf("[MQTT] 连接 %s:%u ... ", cfg.mqttHost, cfg.mqttPort);
     char topicState[80], topicSet[80];
     snprintf(topicState, sizeof(topicState), "%s/state", cfg.topic);
@@ -301,11 +314,14 @@ static void ensureConnections() {
 
     if (mqtt.connect(clientId, topicState, 1, true, "{\"online\":0}")) {
       Serial.println("成功！");
+      lastMqttOkMs = millis();
       mqtt.subscribe(topicSet);
       publishState("boot");
     } else {
       Serial.printf("失败 rc=%d\n", mqtt.state());
     }
+  } else {
+    lastMqttOkMs = millis();   // 在线即刷新看门狗基准
   }
 }
 
@@ -463,7 +479,9 @@ static void pollLeds() {
     int pcOn = readPcPower();
     int currentLit = (pcOn == 1 && digitalRead(cfg.pinHdled) == 0) ? 1 : 0;
     if (currentLit != lastDiskLit) {
-      if (millis() - lastLitReportMs > 200) {
+      // 限频 1s：硬盘灯高频抖动时也最多每秒上报一次，
+      // 防止 TLS 报文洪泛触发 EMQX 公共服务器限流/断连
+      if (millis() - lastLitReportMs > 1000) {
         lastLitReportMs = millis();
         lastDiskLit = currentLit;
         if (currentLit == 1) {
@@ -502,6 +520,7 @@ void setup() {
 
   setupBLE();
   connectWiFi();
+  lastMqttOkMs = millis();   // 启动看门狗基准（从上电起算，120s 内必须连上）
 
   Serial.println("\n=============================================");
   Serial.println(" ESP32-S3 全功能远程控制器 (MQTT + BLE + LED)");
@@ -510,6 +529,14 @@ void setup() {
 
 void loop() {
   if (rebootScheduleMs && millis() > rebootScheduleMs) {
+    ESP.restart();
+  }
+
+  // 无人值守看门狗：连续 120 秒连不上 MQTT 就自动重启自愈
+  // （覆盖校园网踢人、TLS 悬挂、云端限流等一切"卡死"情况）
+  if (millis() - lastMqttOkMs > 120000) {
+    Serial.println("[WDT] 失联超时 120s，自动重启自愈...");
+    delay(50);
     ESP.restart();
   }
 
