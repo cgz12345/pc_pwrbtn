@@ -99,18 +99,18 @@
     <g transform="translate(16, 46)">
       <rect width="288" height="52" rx="6" fill="#0b0f19" stroke="#475569" stroke-width="1"/>
       <g transform="translate(18, 14)" font-size="8.5" text-anchor="middle">
-        <!-- 上排 -->
-        <circle cx="10" cy="5" r="4.5" fill="#475569"/><text x="10" y="16" fill="#64748b">HD+</text>
-        <circle cx="58" cy="5" r="5" fill="#c084fc"/><text x="58" y="16" fill="#c084fc" font-weight="700">HD-</text>
-        <circle cx="118" cy="5" r="5" fill="#f59e0b"/><text x="118" y="16" fill="#f59e0b" font-weight="700">RST</text>
-        <circle cx="174" cy="5" r="5" fill="#f59e0b"/><text x="174" y="16" fill="#f59e0b">RST</text>
-        <circle cx="230" cy="5" r="4" fill="#334155"/><text x="230" y="16" fill="#64748b">NC</text>
-        <!-- 下排 -->
-        <circle cx="10" cy="27" r="4.5" fill="#475569"/><text x="10" y="37" fill="#64748b">PWR+</text>
-        <circle cx="58" cy="27" r="5" fill="#38bdf8"/><text x="58" y="37" fill="#38bdf8" font-weight="700">PLED-</text>
-        <circle cx="118" cy="27" r="5" fill="#10b981"/><text x="118" y="37" fill="#10b981" font-weight="700">PWR</text>
-        <circle cx="174" cy="27" r="5" fill="#10b981"/><text x="174" y="37" fill="#10b981">PWR</text>
-        <rect x="226" y="23" width="7" height="7" fill="#1e293b" stroke="#334155"/>
+        <!-- 上排 4 根针 (右侧防呆缺针) -->
+        <circle cx="10" cy="5" r="4.5" fill="#475569"/><text x="10" y="16" fill="#64748b">PLED+</text>
+        <circle cx="58" cy="5" r="5" fill="#38bdf8"/><text x="58" y="16" fill="#38bdf8" font-weight="700">PLED-</text>
+        <circle cx="118" cy="5" r="5" fill="#10b981"/><text x="118" y="16" fill="#10b981" font-weight="700">PWR+</text>
+        <circle cx="174" cy="5" r="4.5" fill="#475569"/><text x="174" y="16" fill="#64748b">GND</text>
+        <rect x="226" y="1" width="7" height="7" fill="#1e293b" stroke="#334155" stroke-dasharray="1,1"/><text x="230" y="16" fill="#64748b">KEY</text>
+        <!-- 下排 5 根针 (右侧独立空针) -->
+        <circle cx="10" cy="27" r="4.5" fill="#475569"/><text x="10" y="37" fill="#64748b">HD+</text>
+        <circle cx="58" cy="27" r="5" fill="#c084fc"/><text x="58" y="37" fill="#c084fc" font-weight="700">HD-</text>
+        <circle cx="118" cy="27" r="4.5" fill="#475569"/><text x="118" y="37" fill="#64748b">GND</text>
+        <circle cx="174" cy="27" r="5" fill="#f59e0b"/><text x="174" y="37" fill="#f59e0b" font-weight="700">RST+</text>
+        <circle cx="230" cy="27" r="4" fill="#334155"/><text x="230" y="37" fill="#64748b">NC</text>
       </g>
     </g>
 
@@ -119,7 +119,7 @@
     <g transform="translate(16, 108)">
       <rect width="288" height="42" rx="6" fill="#0b0f19" stroke="#10b981" stroke-width="1.2"/>
       <circle cx="14" cy="21" r="5" fill="#10b981"/>
-      <text x="26" y="25" fill="#10b981" font-size="12" font-weight="700">POWER_SW (Pin 6/8)</text>
+      <text x="26" y="25" fill="#10b981" font-size="12" font-weight="700">POWER_SW (上排第3针 +)</text>
       <text x="180" y="25" fill="#6ee7b7" font-size="11">◄── 脉冲开关机</text>
     </g>
 
@@ -127,7 +127,7 @@
     <g transform="translate(16, 156)">
       <rect width="288" height="42" rx="6" fill="#0b0f19" stroke="#f59e0b" stroke-width="1.2"/>
       <circle cx="14" cy="21" r="5" fill="#f59e0b"/>
-      <text x="26" y="25" fill="#f59e0b" font-size="12" font-weight="700">RESET_SW (Pin 5/7)</text>
+      <text x="26" y="25" fill="#f59e0b" font-size="12" font-weight="700">RESET_SW (下排第4针 +)</text>
       <text x="180" y="25" fill="#fcd34d" font-size="11">◄── 脉冲硬重启</text>
     </g>
 
@@ -135,7 +135,7 @@
     <g transform="translate(16, 204)">
       <rect width="288" height="42" rx="6" fill="#0b0f19" stroke="#38bdf8" stroke-width="1.2"/>
       <circle cx="14" cy="21" r="5" fill="#38bdf8"/>
-      <text x="26" y="25" fill="#38bdf8" font-size="12" font-weight="700">PLED- (Pin 4 负极)</text>
+      <text x="26" y="25" fill="#38bdf8" font-size="12" font-weight="700">PLED- (上排第2针 -)</text>
       <text x="180" y="25" fill="#7dd3fc" font-size="11">低端电平回读 ──►</text>
     </g>
 
@@ -143,7 +143,7 @@
     <g transform="translate(16, 252)">
       <rect width="288" height="42" rx="6" fill="#0b0f19" stroke="#c084fc" stroke-width="1.2"/>
       <circle cx="14" cy="21" r="5" fill="#c084fc"/>
-      <text x="26" y="25" fill="#c084fc" font-size="12" font-weight="700">HDLED- (Pin 3 负极)</text>
+      <text x="26" y="25" fill="#c084fc" font-size="12" font-weight="700">HDLED- (下排第2针 -)</text>
       <text x="180" y="25" fill="#d8b4fe" font-size="11">低端电平回读 ──►</text>
     </g>
 
